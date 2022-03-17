@@ -1,0 +1,18 @@
+#ifndef SIMPLE_RAY_TRACER_CAMERA_H
+#define SIMPLE_RAY_TRACER_CAMERA_H
+
+#include "util/model/Ray.h"
+
+// top interface for all camera objects
+class Camera {
+
+public:
+
+    // get the ray pointing from the view point to the image plane
+    virtual Ray getRay(float x, float y) = 0;
+
+    virtual ~Camera() = default;
+
+};
+
+#endif //SIMPLE_RAY_TRACER_CAMERA_H

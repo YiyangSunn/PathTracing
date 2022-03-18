@@ -3,7 +3,7 @@
 Ray::Ray(const Vector3d & origin, const Vector3d & direction) {
     this->origin = origin;
     this->direction = direction;
-    this->direction.normalize();
+    this->direction = direction;
 }
 
 Vector3d Ray::getOrigin() const {
@@ -12,6 +12,14 @@ Vector3d Ray::getOrigin() const {
 
 Vector3d Ray::getDirection() const {
     return direction;
+}
+
+void Ray::setOrigin(const Vector3d & origin) {
+    this->origin = origin;
+}
+
+void Ray::setDirection(const Vector3d & direction) {
+    this->direction = direction;
 }
 
 std::ostream & operator<<(std::ostream & out, const Ray & r) {

@@ -12,7 +12,10 @@ include_directories(../include)
 
 add_library(simple_ray_tracer_library SHARED
         camera/Perspective.cpp
+        camera/DefocusBlur.cpp
         material/Lambertian.cpp
+        material/Metal.cpp
+        material/Dielectric.cpp
         object/HittableList.cpp
         object/native/Sphere.cpp
         render/RayTracer.cpp

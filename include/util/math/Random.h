@@ -8,7 +8,11 @@ class Random {
 
 public:
 
+    // sample a random point in unit sphere
     static Vector3d randomInUnitSphere();
+
+    // sample a random point in unit circle, the z value is always set to 0
+    static Vector3d randomInUnitDisk();
 
 };
 

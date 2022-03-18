@@ -1,3 +1,4 @@
+#include <cmath>
 #include "util/image/ImageUtil.h"
 
 void ImageUtil::writePPM(const ImageBuffer & im, const std::string & filename, int type) {
@@ -47,5 +48,19 @@ void ImageUtil::writePPM3(const ImageBuffer & im, const std::string & filename) 
         }
         fclose(fp);
         fp = nullptr;
+    }
+}
+
+void ImageUtil::gammaCorrection(ImageBuffer * im, float gamma) {
+    int w = im->getWidth();
+    int h = im->getHeight();
+    float exp = 1.f / gamma;
+    for (int i = 0; i < h; ++i) {
+        for (int j = 0; j < w; ++j) {
+            for (int k = 0; k < 3; ++k) {
+                float v = (*im)[i][j][k];
+                (*im)[i][j][k] = powf(v, exp);
+            }
+        }
     }
 }

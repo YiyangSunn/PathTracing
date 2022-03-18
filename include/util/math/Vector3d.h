@@ -68,6 +68,22 @@ Vector3d operator/(const Vector3d & vec, float val);
 
 Vector3d operator/(float val, const Vector3d & vec);
 
+Vector3d & operator+=(Vector3d & vec1, const Vector3d & vec2);
+
+Vector3d & operator-=(Vector3d & vec1, const Vector3d & vec2);
+
+Vector3d & operator*=(Vector3d & vec1, const Vector3d & vec2);
+
+Vector3d & operator/=(Vector3d & vec1, const Vector3d & vec2);
+
+Vector3d & operator+=(Vector3d & vec1, float val);
+
+Vector3d & operator-=(Vector3d & vec1, float val);
+
+Vector3d & operator*=(Vector3d & vec1, float val);
+
+Vector3d & operator/=(Vector3d & vec1, float val);
+
 // for debugging or logging
 std::ostream & operator<<(std::ostream & out, const Vector3d & vec);
 

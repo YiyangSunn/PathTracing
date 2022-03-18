@@ -18,7 +18,8 @@ void Lambertian::setAlbedo(const Vector3d & albedo) {
 }
 
 // reflect randomly to approximate diffuse
-bool Lambertian::scatter(const Vector3d & din, const Vector3d & p, const Vector3d & n, Vector3d * dout) {
+bool Lambertian::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) {
+    Vector3d n = (noVec.dot(din) >= 0 ? -noVec : noVec);
     *dout = Random::randomInUnitSphere() + n;
     dout->normalize();
     return true;

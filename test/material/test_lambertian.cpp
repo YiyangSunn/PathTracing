@@ -10,14 +10,16 @@ int main() {
     Vector3d s(0, 0, 0);
     Vector3d p(1, 1, 1);
     Vector3d n(0, 1, 0);
+    // hit from inside
     Vector3d din(1, 1, 1);
     Vector3d dout(2, 2, 2);
     int m = 200;
     for (int i = 0; i < m; ++i) {
         assert(mat->scatter(din, p, n, &dout));
+        assert(dout.dot(-n) >= 0);
         s = s + dout;
     }
-    assert((s.normalize() - n).getLength() < 1e-1);
+    assert((s.normalize() + n).getLength() < 1e-1);
 
     delete mat;
 

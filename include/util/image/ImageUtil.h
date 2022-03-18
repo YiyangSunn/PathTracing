@@ -8,11 +8,14 @@ class ImageUtil {
 
 public:
 
+    // write the image to disk in .ppm format
     static void writePPM(const ImageBuffer & im, const std::string & filename, int type = 6);
 
     static void writePPM6(const ImageBuffer & im, const std::string & filename);
 
     static void writePPM3(const ImageBuffer & im, const std::string & filename);
+
+    static void gammaCorrection(ImageBuffer * im, float gamma);
 
 };
 

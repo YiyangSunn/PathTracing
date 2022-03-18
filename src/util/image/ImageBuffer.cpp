@@ -6,6 +6,15 @@ ImageBuffer::ImageBuffer(int width, int height) {
     buffer = new Vector3d [width * height];
 }
 
+ImageBuffer::ImageBuffer(const ImageBuffer & im) {
+    this->width = im.width;
+    this->height = im.height;
+    this->buffer = new Vector3d [width * height];
+    for (int i = 0; i < width * height; ++i) {
+        this->buffer[i] = im.buffer[i];
+    }
+}
+
 int ImageBuffer::getWidth() const {
     return width;
 }

@@ -5,7 +5,7 @@
 
 class Perspective: public Camera {
 
-private:
+protected:
 
     // position of the camera, or view point
     Vector3d e;

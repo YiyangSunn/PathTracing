@@ -12,5 +12,7 @@ Perspective::Perspective(const Vector3d & pos, const Vector3d & view, const Vect
 }
 
 Ray Perspective::getRay(float x, float y) {
-    return {e, e - d * w + (x - 0.5f) * width * u + (y - 0.5f) * height * v};
+    // note the direction should not have e involved
+    Vector3d rd = - d * w + (x - 0.5f) * width * u + (y - 0.5f) * height * v;
+    return {e, rd.normalize()};
 }

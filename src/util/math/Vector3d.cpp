@@ -106,6 +106,62 @@ Vector3d operator/(float val, const Vector3d & vec) {
     return {val / vec[0], val / vec[1], val / vec[2]};
 }
 
+Vector3d & operator+=(Vector3d & vec1, const Vector3d & vec2) {
+    vec1[0] += vec2[0];
+    vec1[1] += vec2[1];
+    vec1[2] += vec2[2];
+    return vec1;
+}
+
+Vector3d & operator-=(Vector3d & vec1, const Vector3d & vec2) {
+    vec1[0] -= vec2[0];
+    vec1[1] -= vec2[1];
+    vec1[2] -= vec2[2];
+    return vec1;
+}
+
+Vector3d & operator*=(Vector3d & vec1, const Vector3d & vec2) {
+    vec1[0] *= vec2[0];
+    vec1[1] *= vec2[1];
+    vec1[2] *= vec2[2];
+    return vec1;
+}
+
+Vector3d & operator/=(Vector3d & vec1, const Vector3d & vec2) {
+    vec1[0] /= vec2[0];
+    vec1[1] /= vec2[1];
+    vec1[2] /= vec2[2];
+    return vec1;
+}
+
+Vector3d & operator+=(Vector3d & vec, float val) {
+    vec[0] += val;
+    vec[1] += val;
+    vec[2] += val;
+    return vec;
+}
+
+Vector3d & operator-=(Vector3d & vec, float val) {
+    vec[0] -= val;
+    vec[1] -= val;
+    vec[2] -= val;
+    return vec;
+}
+
+Vector3d & operator*=(Vector3d & vec, float val) {
+    vec[0] *= val;
+    vec[1] *= val;
+    vec[2] *= val;
+    return vec;
+}
+
+Vector3d & operator/=(Vector3d & vec, float val) {
+    vec[0] /= val;
+    vec[1] /= val;
+    vec[2] /= val;
+    return vec;
+}
+
 std::ostream & operator<<(std::ostream & out, const Vector3d & vec) {
     out << "Vector3d{x=" << vec[0] << ",y=" << vec[1] << ",z=" << vec[2] << "}";
     return out;

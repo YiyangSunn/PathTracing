@@ -18,6 +18,8 @@ public:
 
     ImageBuffer(int width, int height);
 
+    ImageBuffer(const ImageBuffer & im);
+
     int getWidth() const;
 
     int getHeight() const;

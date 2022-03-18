@@ -2,7 +2,7 @@
 #include "test_helper.h"
 
 int main() {
-    Vector3d pos(0, 0, 0);
+    Vector3d pos(1.1, 1.1, 1.1);
     Vector3d view(1, 0, 0);
     Vector3d up(0, 1, 0);
     float dist = 10;

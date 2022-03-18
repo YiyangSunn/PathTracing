@@ -52,6 +52,7 @@ bool Sphere::hit(const Ray & ray, float tMin, float tMax, HitRecord * hitRec) {
     if (t > 0) {
         hitRec->t = t;
         hitRec->p = o + t * d;
+        // note may be hit from the inside here
         hitRec->n = (hitRec->p - c).normalize();
         hitRec->material = material;
         return true;

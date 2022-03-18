@@ -13,7 +13,7 @@ public:
 
     explicit Lambertian(const Vector3d & albedo);
 
-    bool scatter(const Vector3d & din, const Vector3d & p, const Vector3d & n, Vector3d * dout) override;
+    bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) override;
 
     Vector3d getAttenuation() override;
 

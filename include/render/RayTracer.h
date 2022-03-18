@@ -9,24 +9,27 @@ class RayTracer: public Renderer {
 
 private:
 
+    static void renderInThread(Camera * camera, Hittable * scene, ImageBuffer * im, int maxDepth, int sample);
+
+    static Vector3d trace(const Ray & ray, Hittable * scene, int maxDepth, int depth = 0);
+
+private:
+
     int maxDepth;
 
     // number of samples to collect around each pixel, the final color
     // is the average of all samples. A larger value would make it more
     // smooth while a smaller one would get it faster.
-    int sample;
+    int totalSample;
 
-    Camera * camera;
-
-    Hittable * scene;
-
-    Vector3d trace(const Ray & ray, int depth = 0);
+    // number of threads to run
+    int nThreads;
 
 public:
 
-    RayTracer(Camera * camera, Hittable * scene, int maxDepth = 10, int sample = 100);
+    RayTracer(int maxDepth = 10, int totalSample = 100, int nThreads = 1);
 
-    void render(ImageBuffer * im) override;
+    void render(Camera * camera, Hittable * scene, ImageBuffer * im) override;
 
     int getMaxDepth() const;
 

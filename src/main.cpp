@@ -21,10 +21,10 @@ int main() {
             Vector3d center((float) i + 0.9f * (float) drand48(), 0.2, (float) j + 0.9f * (float) drand48());
             if ((center - Vector3d(4, 0.2, 0)).getLength() > 0.9) {
                 auto p = (float) drand48();
-                if (p < 0.8) {
+                if (p < 0.6) {
                     mats.push_back(new Lambertian({(float) drand48() * (float) drand48(), (float) drand48() * (float) drand48(), (float) drand48() * (float) drand48()}));
                     objs.push_back(new Sphere(center, 0.2, mats.back()));
-                } else if (p < 0.95) {
+                } else if (p < 0.85) {
                     mats.push_back(new Metal({0.5f * (float) (1 + drand48()), 0.5f * (float) (1 + drand48()), 0.5f * (float) (1 + drand48())}, 0.5f * (float) drand48()));
                     objs.push_back(new Sphere(center, 0.2, mats.back()));
                 } else {
@@ -44,10 +44,10 @@ int main() {
 
     Hittable * scene = new HittableList(objs);
     Camera * camera = new DefocusBlur({13, 2, 3}, {-13, -2, -3}, {0, 1, 0}, 10, 5.7, 3.8, 0.1);
-    Renderer * renderer = new RayTracer(camera, scene, 10, 30);
-    auto * im = new ImageBuffer(240, 160);
+    Renderer * renderer = new RayTracer(50, 50, 5);
+    auto * im = new ImageBuffer(480, 320);
 
-    renderer->render(im);
+    renderer->render(camera, scene, im);
     ImageUtil::gammaCorrection(im, 2);
     ImageUtil::writePPM(*im, "img0.ppm", 6);
 

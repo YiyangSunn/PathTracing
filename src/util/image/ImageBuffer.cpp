@@ -38,8 +38,10 @@ Vector3d * ImageBuffer::operator[](int index) {
 }
 
 ImageBuffer::~ImageBuffer() {
-    delete buffer;
-    buffer = nullptr;
+    if (buffer != nullptr) {
+        delete buffer;
+        buffer = nullptr;
+    }
 }
 
 std::ostream & operator<<(std::ostream & out, const ImageBuffer & im) {

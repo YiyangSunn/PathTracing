@@ -26,6 +26,7 @@ add_library(simple_ray_tracer_library SHARED
         util/model/Box.cpp
         util/model/Ray.cpp
 )
+target_link_libraries(simple_ray_tracer_library pthread)
 
 add_executable(simple_ray_tracer main.cpp)
 target_link_libraries(simple_ray_tracer simple_ray_tracer_library)

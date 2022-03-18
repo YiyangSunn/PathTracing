@@ -8,6 +8,7 @@ enable_testing()
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_CXX_FLAGS "-O2")
     message(STATUS "Build in Release mode")
 endif()
 

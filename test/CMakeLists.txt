@@ -62,3 +62,11 @@ add_test(test_tube ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_disk)
 add_executable(test_cylinder object/native/test_cylinder.cpp test_helper.cpp)
 target_link_libraries(test_cylinder simple_ray_tracer_library)
 add_test(test_cylinder ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_cylinder)
+
+add_executable(test_triangle object/native/test_triangle.cpp test_helper.cpp)
+target_link_libraries(test_triangle simple_ray_tracer_library)
+add_test(test_triangle ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_triangle)
+
+add_executable(test_triangular_pyramid object/native/test_triangular_pyramid.cpp test_helper.cpp)
+target_link_libraries(test_triangular_pyramid simple_ray_tracer_library)
+add_test(test_triangular_pyramid ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_triangular_pyramid)

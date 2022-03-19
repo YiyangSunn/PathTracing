@@ -29,6 +29,8 @@ public:
 
     Vector3d * operator[](int index);
 
+    ImageBuffer & operator=(const ImageBuffer & im) = delete;
+
     virtual ~ImageBuffer();
 
 };

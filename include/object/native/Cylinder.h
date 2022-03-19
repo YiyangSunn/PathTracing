@@ -31,6 +31,8 @@ public:
 
     Box getBoundingBox() override;
 
+    Cylinder & operator=(const Cylinder & cylinder);
+
     ~Cylinder() override;
 
 };

@@ -29,8 +29,8 @@ int main() {
     }
 
     cylinder = Cylinder({0, 0, 0}, {0, 0, -1}, 1.5, 2.4, &mat);
-    assert(cylinder.hit({{0, 0, 1}, {0, 0, -1}}, 1e-3, FLT_MAX, &hitRec));
-    assert_float_equal(hitRec.p.getLength(), 0);
+    assert(cylinder.hit({{0, 0, 2}, {0, 0, -1}}, 1e-3, FLT_MAX, &hitRec));
+    assert_float_equal(hitRec.p.getLength(), 1.2f);
 
     return 0;
 }

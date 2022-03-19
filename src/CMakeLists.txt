@@ -21,6 +21,8 @@ add_library(simple_ray_tracer_library SHARED
         object/native/Disk.cpp
         object/native/Tube.cpp
         object/native/Cylinder.cpp
+        object/native/Triangle.cpp
+        object/native/TriangularPyramid.cpp
         render/RayTracer.cpp
         util/image/ImageBuffer.cpp
         util/image/ImageUtil.cpp

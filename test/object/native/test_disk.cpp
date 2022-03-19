@@ -2,7 +2,7 @@
 #include <cassert>
 #include "object/native/Disk.h"
 #include "material/Lambertian.h"
-#include "../../test_helper.h"
+#include "test_helper.h"
 
 int main() {
     Vector3d c(1, 1, 1);

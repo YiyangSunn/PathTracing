@@ -54,6 +54,18 @@ Box Cylinder::getBoundingBox() {
     return tube->getBoundingBox();
 }
 
+Cylinder & Cylinder::operator=(const Cylinder & cylinder) {
+    if (&cylinder != this) {
+        delete tube;
+        delete disks[0];
+        delete disks[1];
+        tube = new Tube(*cylinder.tube);
+        disks[0] = new Disk(*cylinder.disks[0]);
+        disks[1] = new Disk(*cylinder.disks[1]);
+    }
+    return *this;
+}
+
 Cylinder::~Cylinder() {
     delete tube;
     tube = nullptr;

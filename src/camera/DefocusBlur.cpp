@@ -14,5 +14,5 @@ Ray DefocusBlur::getRay(float x, float y) {
     p *= diskRadius;
     Vector3d offset = p[0] * u + p[1] * v;
     Vector3d rd = - d * w + (x - 0.5f) * width * u + (y - 0.5f) * height * v - offset;
-    return {e + offset, rd.normalize()};
+    return {e + offset, rd};
 }

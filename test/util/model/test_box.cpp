@@ -25,6 +25,13 @@ int main() {
     assert_float_equal(b1.getYMax(), 2);
     assert_float_equal(b1.getZMax(), 2);
 
+    for (int i = 0; i < 100; ++i) {
+        Vector3d p(1e-2f + (float) drand48() * 1.8f, 1e-2f + (float) drand48() * 1.8f, 1e-2f + (float) drand48() * 1.8f);
+        assert(b1.contain(p));
+        p[2] += 3;
+        assert(!b1.contain(p));
+    }
+
     assert(b1.intersect({{1, 0, 1}, {0, 1, 0}}, 1e-3, FLT_MAX));
     assert(b1.intersect({{0, 0, 0}, {1, 1, 1}}, 1e-3, FLT_MAX));
     assert(b1.intersect({{4, 0, 0}, {1.5 - 4, 1.5, 1.5}}, 1e-3, FLT_MAX));

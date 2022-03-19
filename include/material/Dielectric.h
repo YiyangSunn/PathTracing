@@ -13,6 +13,7 @@ private:
     // refractive index of the outside material
     float refIdxOutSide;
 
+    // if the dielectric has color
     Vector3d albedo;
 
 public:

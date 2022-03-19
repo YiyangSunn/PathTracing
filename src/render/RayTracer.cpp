@@ -1,5 +1,6 @@
 #include <cfloat>
 #include <thread>
+#include <iostream>
 
 #include "render/RayTracer.h"
 #include "util/math/Random.h"

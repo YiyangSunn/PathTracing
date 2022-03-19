@@ -33,6 +33,9 @@ public:
 
     float getZMax() const;
 
+    // return true if the box contains the point
+    bool contain(const Vector3d & p) const;
+
     // return true if rin intersects the box
     bool intersect(const Ray & r, float tMin, float tMax) const;
 

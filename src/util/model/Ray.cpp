@@ -2,8 +2,7 @@
 
 Ray::Ray(const Vector3d & origin, const Vector3d & direction) {
     this->origin = origin;
-    this->direction = direction;
-    this->direction = direction;
+    this->direction = direction.getNormalized();
 }
 
 Vector3d Ray::getOrigin() const {

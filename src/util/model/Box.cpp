@@ -43,6 +43,11 @@ float Box::getZMax() const {
     return topRight[2];
 }
 
+bool Box::contain(const Vector3d & p) const {
+    return p[0] > bottomLeft[0] && p[1] > bottomLeft[1] && p[2] > bottomLeft[2] &&
+           p[0] < topRight[0] && p[1] < topRight[1] && p[2] < topRight[2];
+}
+
 // we'll check if there exists a t between tMin and tMax so that
 // r.origin + t * r.direction is inside the box
 bool Box::intersect(const Ray & r, float tMin, float tMax) const {

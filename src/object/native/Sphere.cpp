@@ -14,14 +14,6 @@ Sphere::Sphere(const Vector3d & c, float r, Material * material) {
     this->material = material;
 }
 
-Vector3d Sphere::getCenter() const {
-    return c;
-}
-
-float Sphere::getRadius() const {
-    return r;
-}
-
 // we'll solve the equation (o + t * d - c) * (o + t * d - c) = r^2
 bool Sphere::hit(const Ray & ray, float tMin, float tMax, HitRecord * hitRec) {
     Vector3d o = ray.getOrigin();
@@ -39,11 +31,12 @@ bool Sphere::hit(const Ray & ray, float tMin, float tMax, HitRecord * hitRec) {
 
     // check the solutions
     float t = -1;
-    float t1 = (-b - std::sqrt(delta)) / (2 * a);
+    float root = sqrtf(delta);
+    float t1 = (-b - root) / (2 * a);
     if (t1 > tMin && t1 < tMax) {
         t = t1;
     } else {
-        float t2 = (-b + std::sqrt(delta)) / (2 * a);
+        float t2 = (-b + root) / (2 * a);
         if (t2 > tMin && t2 < tMax) {
             t = t2;
         }
@@ -63,6 +56,14 @@ bool Sphere::hit(const Ray & ray, float tMin, float tMax, HitRecord * hitRec) {
 
 Box Sphere::getBoundingBox() {
     return {c[0] - r, c[1] - r, c[2] - r, c[0] + r, c[1] + r, c[2] + r};
+}
+
+Vector3d Sphere::getCenter() const {
+    return c;
+}
+
+float Sphere::getRadius() const {
+    return r;
 }
 
 std::ostream & operator<<(std::ostream & out, const Sphere & s) {

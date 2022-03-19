@@ -50,3 +50,15 @@ add_test(test_dielectric ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_dielectric)
 add_executable(test_sphere object/native/test_sphere.cpp test_helper.cpp)
 target_link_libraries(test_sphere simple_ray_tracer_library)
 add_test(test_sphere ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_sphere)
+
+add_executable(test_disk object/native/test_disk.cpp test_helper.cpp)
+target_link_libraries(test_disk simple_ray_tracer_library)
+add_test(test_disk ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_disk)
+
+add_executable(test_tube object/native/test_tube.cpp test_helper.cpp)
+target_link_libraries(test_tube simple_ray_tracer_library)
+add_test(test_tube ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_disk)
+
+add_executable(test_cylinder object/native/test_cylinder.cpp test_helper.cpp)
+target_link_libraries(test_cylinder simple_ray_tracer_library)
+add_test(test_cylinder ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_cylinder)

@@ -3,9 +3,13 @@
 
 TriangularPyramid::TriangularPyramid(const Vector3d & p1, const Vector3d & p2, const Vector3d & p3, const Vector3d & p4,
                                      Material * material) {
-    sides[0] = new Triangle(p1, p2, p3, material);
+    // note the order of vertices should not be written carelessly
+    // the normal direction of the triangle depends on vertex order
+    // and we should always ensure the normal vector points to the
+    // outside.
+    sides[0] = new Triangle(p2, p1, p3, material);
     sides[1] = new Triangle(p1, p2, p4, material);
-    sides[2] = new Triangle(p1, p3, p4, material);
+    sides[2] = new Triangle(p3, p1, p4, material);
     sides[3] = new Triangle(p2, p3, p4, material);
     p[0] = p1;
     p[1] = p2;

@@ -94,7 +94,8 @@ bool Tube::hit(const Ray & rin, float tMin, float tMax, HitRecord * hitRec) {
 
 // not a tight box
 Box Tube::getBoundingBox() {
-    float halfSize = sqrtf(h * h + r * r);
+    float halfH = h / 2;
+    float halfSize = sqrtf(halfH * halfH + r * r);
     return {c - halfSize * Vector3d(1, 1, 1), c + halfSize * Vector3d(1, 1, 1)};
 }
 

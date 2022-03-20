@@ -20,7 +20,7 @@ bool Triangle::hit(const Ray & rin, float tMin, float tMax, HitRecord * hitRec) 
     Vector3d d = rin.getDirection();
     Vector3d a = p[1] - p[0];
     Vector3d b = p[2] - p[0];
-    Vector3d n = b.cross(a).normalize();
+    Vector3d n = a.cross(b).normalize();
     float right = n.dot(p[0] - o);
     float left = n.dot(d);
     if (left != 0) {

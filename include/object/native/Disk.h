@@ -21,6 +21,7 @@ private:
 
 public:
 
+    // orientation also used as the normal vector pointing from inside to outside
     Disk(const Vector3d & center, const Vector3d & orientation, float radius, Material * material);
 
     Vector3d getCenter() const;

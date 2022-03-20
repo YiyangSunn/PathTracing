@@ -6,7 +6,8 @@ Cylinder::Cylinder(const Vector3d & center, const Vector3d & orientation, float 
     float hh = height / 2;
     this->tube = new Tube(center, orientation, radius, height, material);
     this->disks[0] = new Disk(center + hh * o, o, radius, material);
-    this->disks[1] = new Disk(center - hh * o, o, radius, material);
+    // note the direction of normal vector
+    this->disks[1] = new Disk(center - hh * o, -o, radius, material);
 }
 
 Vector3d Cylinder::getCenter() const {

@@ -17,12 +17,14 @@ add_library(simple_ray_tracer_library SHARED
         material/Metal.cpp
         material/Dielectric.cpp
         object/HittableList.cpp
+        object/BVHTree.cpp
         object/native/Sphere.cpp
         object/native/Disk.cpp
         object/native/Tube.cpp
         object/native/Cylinder.cpp
         object/native/Triangle.cpp
         object/native/TriangularPyramid.cpp
+        object/native/Rectangle.cpp
         render/RayTracer.cpp
         util/image/ImageBuffer.cpp
         util/image/ImageUtil.cpp
@@ -32,8 +34,11 @@ add_library(simple_ray_tracer_library SHARED
         util/model/Ray.cpp)
 target_link_libraries(simple_ray_tracer_library pthread)
 
-add_executable(random_spheres random_spheres.cpp)
+add_executable(random_spheres example/random_spheres.cpp)
 target_link_libraries(random_spheres simple_ray_tracer_library)
+
+add_executable(random_geometries example/random_geometries.cpp)
+target_link_libraries(random_geometries simple_ray_tracer_library)
 
 add_executable(main main.cpp)
 target_link_libraries(main simple_ray_tracer_library)

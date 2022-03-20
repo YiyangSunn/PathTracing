@@ -70,3 +70,11 @@ add_test(test_triangle ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_triangle)
 add_executable(test_triangular_pyramid object/native/test_triangular_pyramid.cpp test_helper.cpp)
 target_link_libraries(test_triangular_pyramid simple_ray_tracer_library)
 add_test(test_triangular_pyramid ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_triangular_pyramid)
+
+add_executable(test_rectangle object/native/test_rectangle.cpp test_helper.cpp)
+target_link_libraries(test_rectangle simple_ray_tracer_library)
+add_test(test_rectangle ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_rectangle)
+
+add_executable(test_bvhtree object/test_bvhtree.cpp test_helper.cpp)
+target_link_libraries(test_bvhtree simple_ray_tracer_library)
+add_test(test_bvhtree ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_bvhtree)

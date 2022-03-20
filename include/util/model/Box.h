@@ -13,6 +13,8 @@ private:
 
 public:
 
+    Box();
+
     Box(float xMin, float yMin, float zMin, float xMax, float yMax, float zMax);
 
     Box(const Vector3d & bottomLeft, const Vector3d & topRight);
@@ -20,6 +22,8 @@ public:
     Vector3d getBottomLeft() const;
 
     Vector3d getTopRight() const;
+
+    Vector3d getCenter() const;
 
     float getXMin() const;
 

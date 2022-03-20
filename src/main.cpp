@@ -13,6 +13,7 @@
 #include "object/native/Cylinder.h"
 #include "object/native/Triangle.h"
 #include "object/native/TriangularPyramid.h"
+#include "object/native/Rectangle.h"
 
 int main() {
     std::vector<Material *> mats;
@@ -20,11 +21,14 @@ int main() {
 
     mats.push_back(new Lambertian({0.3, 0.2, 0.5}));
 //    mats.push_back(new Dielectric(1.5));
-    objs.push_back(new TriangularPyramid({1.5, -0.5, -1.5}, {-1.5, -0.5, -1.5}, {0, 2, -1.5}, {0, 0, 0.5}, mats.back()));
+    Vector3d c(-1, -1, -1);
+    Vector3d a(2, 0, 0);
+    Vector3d b(0, 1, 0);
+    objs.push_back(new Rectangle(c, a, b, mats.back()));
 
-    Vector3d target(0, 0.1, -0.5);
-    Vector3d position(0, 0.8, -3);
-    Renderer * renderer = new RayTracer(10, 80, 2);
+    Vector3d target = c + (a + b) / 2;
+    Vector3d position(0, target[1], 0.5);
+    Renderer * renderer = new RayTracer(10, 100, 2);
     Camera * camera = new Perspective(position, target - position, {0, 1, 0}, 1, 4, 2);
     Hittable * scene = new HittableList(objs);
     auto * im = new ImageBuffer(400, 200);

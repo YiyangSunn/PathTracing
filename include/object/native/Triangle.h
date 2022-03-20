@@ -15,6 +15,7 @@ private:
 
 public:
 
+    // p1, p2, p3 must be in counterclockwise order looked from outside
     Triangle(const Vector3d & p1, const Vector3d & p2, const Vector3d & p3, Material * material);
 
     const Vector3d & operator[](int index) const;

@@ -69,5 +69,12 @@ int main() {
         assert(!b1.intersect({o, {x, y, z}}, 1e-3, FLT_MAX));
     }
 
+    for (int i = 0; i < 100; ++i) {
+        Vector3d bl((float) drand48(), (float) drand48(), (float) drand48());
+        Vector3d tr((float) drand48(), (float) drand48(), (float) drand48());
+        Box b(bl, tr);
+        assert_vector3d_equal(b.getCenter() - bl, tr - b.getCenter());
+    }
+
     return 0;
 }

@@ -1,6 +1,11 @@
 #include <cfloat>
 #include "util/model/Box.h"
 
+Box::Box() {
+    bottomLeft = {0, 0, 0};
+    topRight = {0, 0, 0};
+}
+
 // make it slightly bigger
 Box::Box(float xMin, float yMin, float zMin, float xMax, float yMax, float zMax) {
     bottomLeft = Vector3d(xMin, yMin, zMin) - 3e-5f;
@@ -18,6 +23,10 @@ Vector3d Box::getBottomLeft() const {
 
 Vector3d Box::getTopRight() const {
     return topRight;
+}
+
+Vector3d Box::getCenter() const {
+    return (bottomLeft + topRight) / 2;
 }
 
 float Box::getXMin() const {

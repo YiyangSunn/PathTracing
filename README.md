@@ -8,3 +8,7 @@ And more examples:
 ![basic_scene.jpg](image/basic_scene.jpg)
 
 ![bottle_on_table](image/bottle_on_table.jpg)
+
+![random_spheres](image/random_spheres.jpg)
+
+![metal_and_glass](image/metal_and_glass.jpg)

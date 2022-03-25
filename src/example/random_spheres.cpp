@@ -16,7 +16,7 @@
 int main(int argc, char * argv[]) {
     // default parameters
     int width = 300;
-    int height = 180;
+    int height = 200;
     int threadCount = 5;
     int samplePerPixel = 30;
     int maxDepth = 50;

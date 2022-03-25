@@ -10,6 +10,10 @@ typedef struct HitRecord {
     // parameter of the incident light at p
     float t;
 
+    float u;
+
+    float v;
+
     // the hit point
     Vector3d p;
 
@@ -20,7 +24,7 @@ typedef struct HitRecord {
     Material * material;
 
     HitRecord() {
-        t = -1;
+        t = u = v = -1;
         material = nullptr;
     }
 

@@ -13,7 +13,7 @@ private:
     // refractive index of the outside material
     float refIdxOutSide;
 
-    // if the dielectric has color
+    // the texture of this material
     Vector3d albedo;
 
 public:
@@ -24,15 +24,15 @@ public:
 
     explicit Dielectric(float refIdxInside, const Vector3d & albedo = {1.f, 1.f, 1.f}, float refIdxOutside = 1.f);
 
-    bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) override;
+    bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) override;
+
+    Vector3d emit(float u, float v, const Vector3d & p) override;
 
     Vector3d getAlbedo() const;
 
     float getRefIdxInside() const;
 
     float getRefIdxOutside() const;
-
-    Vector3d getAttenuation() override;
 
     ~Dielectric() override = default;
 

@@ -4,8 +4,8 @@
 
 int main() {
     Vector3d albedo(0.3, 0.5, 0.7);
-    Material * mat = new Lambertian(albedo);
-    assert_vector3d_equal(mat->getAttenuation(), albedo);
+    Lambertian mat(albedo);
+    assert_vector3d_equal(mat.getAlbedo(), albedo);
 
     Vector3d s(0, 0, 0);
     Vector3d p(1, 1, 1);
@@ -13,15 +13,14 @@ int main() {
     // hit from inside
     Vector3d din(1, 1, 1);
     Vector3d dout(2, 2, 2);
+    Vector3d attenuation;
     int m = 200;
     for (int i = 0; i < m; ++i) {
-        assert(mat->scatter(din, p, n, &dout));
+        assert(mat.scatter(din, p, n, &dout, &attenuation));
         assert(dout.dot(-n) >= 0);
         s = s + dout;
     }
     assert((s.normalize() + n).getLength() < 1e-1);
-
-    delete mat;
 
     return 0;
 }

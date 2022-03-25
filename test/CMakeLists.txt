@@ -78,3 +78,7 @@ add_test(test_rectangle ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_rectangle)
 add_executable(test_bvhtree object/test_bvhtree.cpp test_helper.cpp)
 target_link_libraries(test_bvhtree simple_ray_tracer_library)
 add_test(test_bvhtree ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_bvhtree)
+
+add_executable(test_mesh_triangle object/mesh/test_mesh_triangle.cpp test_helper.cpp)
+target_link_libraries(test_mesh_triangle simple_ray_tracer_library)
+add_test(test_mesh_triangle ${CMAKE_CURRENT_SOURCE_DIR}/bin/test_mesh_triangle)

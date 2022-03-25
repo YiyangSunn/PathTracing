@@ -31,14 +31,10 @@ Vector3d Dielectric::getAlbedo() const {
     return albedo;
 }
 
-Vector3d Dielectric::getAttenuation() {
-    return albedo;
-}
-
 // assume that light always enters medium 2 from medium 1, then
 // rf1 is the refractive index of medium 1, rf2 is that of medium 2
 // the normal vector n always points toward medium 1
-bool Dielectric::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) {
+bool Dielectric::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) {
     bool inside = (noVec.dot(din) >= 0);
     Vector3d n = (inside ? -noVec : noVec);
     float rf1 = (inside ? refIdxInside : refIdxOutSide);
@@ -67,7 +63,15 @@ bool Dielectric::scatter(const Vector3d & din, const Vector3d & pos, const Vecto
         *dout = -n * cos2 + (rfRatio * (din + cos1 * n));
     }
 
+    // set the attenuation
+    *attenuation = albedo;
+
     return true;
+}
+
+// no emitting
+Vector3d Dielectric::emit(float u, float v, const Vector3d & p) {
+    return {0, 0, 0};
 }
 
 std::ostream & operator<<(std::ostream & out, const Dielectric & mat) {

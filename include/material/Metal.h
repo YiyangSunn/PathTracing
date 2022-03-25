@@ -19,13 +19,13 @@ public:
 
     explicit Metal(const Vector3d & albedo, float fuzzy = 0);
 
-    bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) override;
+    bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) override;
+
+    Vector3d emit(float u, float v, const Vector3d & p) override;
 
     Vector3d getAlbedo() const;
 
     float getFuzzy() const;
-
-    Vector3d getAttenuation() override;
 
     ~Metal() override = default;
 

@@ -1,4 +1,6 @@
+#include <cmath>
 #include "object/native/Disk.h"
+#include "util/math/Random.h"
 
 Disk::Disk(const Vector3d & center, const Vector3d & orientation, float radius, Material * material) {
     c = center;
@@ -53,6 +55,24 @@ Vector3d Disk::getOrientation() const {
 float Disk::getRadius() const {
     return r;
 }
+
+//Vector3d Disk::samplePointOnSurface() const {
+//    // first sample a random direction on xy plane
+//    Vector3d d = Random::randomInUnitDisk();
+//    // then find the correct z value so that d.dot(o) = 0
+//    if (o[2] == 0) {
+//        // could be arbitrary value
+//        d[2] = 1;
+//    } else {
+//        // make d on the disk plane
+//        d[2] = (-d[0] * o[0] - d[1] * o[1]) / o[2];
+//    }
+//    // suppose that we'll sample point p, note that d now is on the plane,
+//    // so we can set p - c = t * d, and use(p - c).dot(p - c) = r^2 we get
+//    // t^2 * d.dot(d) = r ^ 2
+//    float t = sqrtf(r * r / d.dot(d));
+//    return t * d + c;
+//}
 
 std::ostream & operator<<(std::ostream & out, const Disk & disk) {
     out << "Disk{center=" << disk.getCenter() << ",orientation=" << disk.getOrientation() << ",radius=" << disk.getRadius() << "}";

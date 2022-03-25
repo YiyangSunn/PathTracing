@@ -9,7 +9,6 @@ int main() {
     Vector3d albedo(1.2, 1.2, 1.2);
     Dielectric mat(rfInside, albedo, rfOutside);
     assert_vector3d_equal(mat.getAlbedo(), albedo);
-    assert_vector3d_equal(mat.getAttenuation(), albedo);
     assert_float_equal(mat.getRefIdxInside(), rfInside);
     assert_float_equal(mat.getRefIdxOutside(), rfOutside);
 
@@ -21,7 +20,8 @@ int main() {
         din.normalize();
         Vector3d p(1.1, 1.2, 1.3);
         Vector3d dout;
-        assert(mat.scatter(din, p, n, &dout));
+        Vector3d attenuation;
+        assert(mat.scatter(din, p, n, &dout, &attenuation));
         if (dout.dot(n) >= 0) {
             // should be reflection
             assert_vector3d_equal((dout - din).normalize(), n);
@@ -43,7 +43,8 @@ int main() {
         din.normalize();
         Vector3d p(1.1, 1.2, 1.3);
         Vector3d dout;
-        assert(mat.scatter(din, p, n, &dout));
+        Vector3d attenuation;
+        assert(mat.scatter(din, p, n, &dout, &attenuation));
 
         float cos1 = n.dot(din);
         float cos2 = n.dot(dout);

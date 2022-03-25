@@ -94,16 +94,21 @@ Vector3d RayTracer::trace(const Ray & ray, Hittable * scene, int maxDepth, int d
     if (depth < maxDepth && scene->hit(ray, 1e-3, FLT_MAX, &hitRec)) {
         Material * material = hitRec.material;
         Vector3d dout;
-        if (material->scatter(ray.getDirection(), hitRec.p, hitRec.n, &dout)) {
+        Vector3d attenuation;
+        Vector3d emitted = material->emit(hitRec.u, hitRec.v, hitRec.p);
+        if (material->scatter(ray.getDirection(), hitRec.p, hitRec.n, &dout, &attenuation)) {
             Ray rout(hitRec.p, dout);
-            return material->getAttenuation() * trace(rout, scene, maxDepth, depth + 1);
+            return emitted + attenuation * trace(rout, scene, maxDepth, depth + 1);
         } else {
-            // entirely absorbed by the material
-            return {0, 0, 0};
+            // in case of no scattering
+            return emitted;
         }
     }
     // an background color for now
     Vector3d d = ray.getDirection();
     float t = 0.5f * (d[1] + 1);
     return (1 - t) * Vector3d(1, 1, 1) + t * Vector3d(0.5, 0.7, 1);
+
+    // no light found
+//    return {0, 0, 0};
 }

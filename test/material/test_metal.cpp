@@ -7,7 +7,6 @@ int main() {
     float fuzzy = 0;
     Metal mat(albedo, fuzzy);
     assert_vector3d_equal(mat.getAlbedo(), albedo);
-    assert_vector3d_equal(mat.getAttenuation(), albedo);
     assert_float_equal(mat.getFuzzy(), fuzzy);
 
     Vector3d p(1.5, 1.5, 1.5);
@@ -18,7 +17,8 @@ int main() {
             din = -din;
         }
         Vector3d dout;
-        if (mat.scatter(din, p, n, &dout)) {
+        Vector3d attenuation;
+        if (mat.scatter(din, p, n, &dout, &attenuation)) {
             assert(n.dot(dout) > 0);
             assert_vector3d_equal((dout - din).normalize(), n);
         }
@@ -30,7 +30,8 @@ int main() {
         Vector3d din = Vector3d((float) drand48(), (float) drand48(), (float) drand48()).normalize();
         Vector3d n = Vector3d((float) drand48(), (float) drand48(), (float) drand48()).normalize();
         Vector3d dout;
-        if (mat.scatter(din, p, n, &dout)) {
+        Vector3d attenuation;
+        if (mat.scatter(din, p, n, &dout, &attenuation)) {
             if (din.dot(n) >= 0) {
                 assert(n.dot(-dout) >= 0);
             } else {

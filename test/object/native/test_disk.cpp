@@ -29,5 +29,15 @@ int main() {
         }
     }
 
+    // test sampling on the surface
+//    Vector3d s(0, 0, 0);
+//    for (int i = 0; i < 300; ++i) {
+//        Vector3d p = disk.samplePointOnSurface();
+//        assert_float_equal((p - disk.getCenter()).getLength(), disk.getRadius());
+//        assert_float_equal((p - disk.getCenter()).dot(disk.getOrientation()), 0);
+//        s += p;
+//    }
+//    assert((s - disk.getCenter()).getLength() < 1e-2);
+
     return 0;
 }

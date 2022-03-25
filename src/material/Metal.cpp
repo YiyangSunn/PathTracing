@@ -19,11 +19,7 @@ float Metal::getFuzzy() const {
     return fuzzy;
 }
 
-Vector3d Metal::getAttenuation() {
-    return albedo;
-}
-
-bool Metal::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout) {
+bool Metal::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) {
     Vector3d n = (noVec.dot(din) >= 0 ? -noVec : noVec);
     float h = -(n.dot(din));
     *dout = din + 2 * h * n;
@@ -31,7 +27,13 @@ bool Metal::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d &
         *dout += h * 0.99f * fuzzy * Random::randomInUnitSphere();
         (*dout).normalize();
     }
+    *attenuation = albedo;
     return true;
+}
+
+// no emitting
+Vector3d Metal::emit(float u, float v, const Vector3d & p) {
+    return {0, 0, 0};
 }
 
 std::ostream & operator<<(std::ostream & out, const Metal & metal) {

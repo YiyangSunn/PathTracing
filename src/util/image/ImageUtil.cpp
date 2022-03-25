@@ -23,7 +23,7 @@ void ImageUtil::writePPM6(const ImageBuffer & im, const std::string & filename) 
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 for (int k = 0; k < 3; ++k) {
-                    fputc((unsigned char) (255.99f * im[i][j][k]), fp);
+                    fputc((unsigned char) (std::max(std::min(255.99f * im[i][j][k], 255.99f), 0.01f)), fp);
                 }
             }
         }
@@ -41,7 +41,7 @@ void ImageUtil::writePPM3(const ImageBuffer & im, const std::string & filename) 
         for (int i = 0; i < height; ++i) {
             for (int j = 0; j < width; ++j) {
                 for (int k = 0; k < 3; ++k) {
-                    fprintf(fp, "%d ", (int) (255.99f * im[i][j][k]));
+                    fprintf(fp, "%d ", (int) (std::max(std::min(255.99f * im[i][j][k], 255.99f), 0.01f)));
                 }
                 fputc('\n', fp);
             }

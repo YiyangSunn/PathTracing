@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <getopt.h>
 #include "render/Renderer.h"
 #include "render/RayTracer.h"
 #include "object/HittableList.h"
@@ -30,7 +31,42 @@ Material * random_dielectric();
 bool conllide(const std::vector<Box> & boxes, const Box & box);
 
 // render an image with lots of random spheres
-int main() {
+int main(int argc, char * argv[]) {
+    // default parameters
+    int width = 300;
+    int height = 200;
+    int threadCount = 5;
+    int samplePerPixel = 30;
+    int maxDepth = 50;
+    std::string outputFile = "img.ppm";
+
+    // get input args
+    const char * opts = ":w:h:s:t:d:o:";
+    int c = 0;
+    while ((c = getopt(argc, argv, opts)) != EOF) {
+        switch (c) {
+            case 'w':
+                width = std::stoi(optarg);
+                break;
+            case 'h':
+                height = std::stoi(optarg);
+                break;
+            case 's':
+                samplePerPixel = std::stoi(optarg);
+                break;
+            case 't':
+                threadCount = std::stoi(optarg);
+                break;
+            case 'd':
+                maxDepth = std::stoi(optarg);
+                break;
+            case 'o':
+                outputFile = optarg;
+                break;
+            default:
+                break;
+        }
+    }
 
     std::cout << "start generating scene..." << std::flush;
 
@@ -40,10 +76,10 @@ int main() {
 
     // the bottom plane
     mats.push_back(new Lambertian({0.5, 0.5, 0.5}));
-    Vector3d c(-500, 0, 500);
+    Vector3d center(-500, 0, 500);
     Vector3d a(1000, 0, 0);
     Vector3d b(0, 0, -1000);
-    objs.push_back(new Rectangle(c, a, b, mats.back()));
+    objs.push_back(new Rectangle(center, a, b, mats.back()));
 
     // the big cylinder
     mats.push_back(new Lambertian({0.4, 0.2, 0.1}));
@@ -115,12 +151,12 @@ int main() {
 //    Hittable * scene = new HittableList(objs);
 //    Camera * camera = new DefocusBlur({13, 2.1, 3}, {-13, -2.1, -3}, {0, 1, 0}, 8, 5.7, 3.8, 0.1);
     Camera * camera = new Perspective({13, 2.1, 3}, {-13, -2.1, -3}, {0, 1, 0}, 8, 5.7, 3.8);
-    Renderer * renderer = new RayTracer(50, 500, 5);
-    auto * im = new ImageBuffer(1800, 1200);
+    Renderer * renderer = new RayTracer(maxDepth, samplePerPixel, threadCount);
+    auto * im = new ImageBuffer(width, height);
 
     renderer->render(camera, scene, im);
     ImageUtil::gammaCorrection(im, 2);
-    ImageUtil::writePPM(*im, "img0.ppm", 6);
+    ImageUtil::writePPM(*im, outputFile, 6);
 
     std::cout << "ok" << std::endl << std::flush;
 

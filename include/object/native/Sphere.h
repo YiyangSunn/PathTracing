@@ -13,9 +13,6 @@ private:
     // radius of the sphere
     float r;
 
-    // material of the sphere
-    Material * material;
-
 public:
 
     Sphere(const Vector3d & c, float r, Material * material);

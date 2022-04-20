@@ -31,11 +31,6 @@ bool Metal::scatter(const Vector3d & din, const Vector3d & pos, const Vector3d &
     return true;
 }
 
-// no emitting
-Vector3d Metal::emit(float u, float v, const Vector3d & p) {
-    return {0, 0, 0};
-}
-
 std::ostream & operator<<(std::ostream & out, const Metal & metal) {
     out << "Metal{albedo=" << metal.getAlbedo() << ",fuzzy=" << metal.getFuzzy() << "}";
     return out;

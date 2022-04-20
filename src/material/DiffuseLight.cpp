@@ -13,8 +13,12 @@ bool DiffuseLight::scatter(const Vector3d & din, const Vector3d & pos, const Vec
     return false;
 }
 
-Vector3d DiffuseLight::emit(float u, float v, const Vector3d & p) {
+Vector3d DiffuseLight::emit() {
     return albedo;
+}
+
+bool DiffuseLight::isEmitting() {
+    return true;
 }
 
 std::ostream & operator<<(std::ostream & out, const DiffuseLight & light) {

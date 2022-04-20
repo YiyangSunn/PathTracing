@@ -21,8 +21,6 @@ public:
 
     bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) override;
 
-    Vector3d emit(float u, float v, const Vector3d & p) override;
-
     Vector3d getAlbedo() const;
 
     float getFuzzy() const;

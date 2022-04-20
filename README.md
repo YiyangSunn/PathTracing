@@ -1,14 +1,7 @@
-# simple-ray-tracer
-A simple ray tracer implementation for the graphics course at NJU. Basically it supports different geometries and materials, and the following is one example: 
+# HW2
 
-![random_geometries.jpg](image/random_geometries.jpg)
+作业二探索使用不同采样方法采样圆盘状光源对软阴影效果的影响：
 
-And more examples:
-
-![basic_scene.jpg](image/basic_scene.jpg)
-
-![bottle_on_table](image/bottle_on_table.jpg)
-
-![random_spheres](image/random_spheres.jpg)
-
-![metal_and_glass](image/metal_and_glass.jpg)
+* 等间隔采样；
+* 均匀分布采样；
+* 蓝噪声采样；

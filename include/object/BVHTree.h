@@ -2,7 +2,6 @@
 #define SIMPLE_RAY_TRACER_BVHTREE_H
 
 #include <vector>
-
 #include "Hittable.h"
 
 class BVHTree: public Hittable {

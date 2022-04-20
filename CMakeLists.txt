@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.21)
 
-project(simple_ray_tracer)
+project(simple-ray-tracer)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -13,4 +13,3 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 add_subdirectory(src)
-add_subdirectory(test)

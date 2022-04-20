@@ -18,7 +18,9 @@ public:
 
     bool scatter(const Vector3d & din, const Vector3d & pos, const Vector3d & noVec, Vector3d * dout, Vector3d * attenuation) override;
 
-    Vector3d emit(float u, float v, const Vector3d & p) override;
+    bool isEmitting() override;
+
+    Vector3d emit() override;
 
     ~DiffuseLight() override = default;
 

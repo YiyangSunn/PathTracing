@@ -13,8 +13,6 @@ private:
 
     Vector3d b;
 
-    Material * material;
-
 public:
 
     // assume p0, p1, p2, p3 represents the four vertices of the rectangle, which must be

@@ -22,11 +22,6 @@ bool Lambertian::scatter(const Vector3d & din, const Vector3d & pos, const Vecto
     return true;
 }
 
-// no emitting
-Vector3d Lambertian::emit(float u, float v, const Vector3d & p) {
-    return {0, 0, 0};
-}
-
 std::ostream & operator<<(std::ostream & out, const Lambertian & lambertian) {
     out << "Lambertian{albedo=" << lambertian.getAlbedo() << "}";
     return out;

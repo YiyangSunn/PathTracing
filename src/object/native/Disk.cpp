@@ -2,11 +2,10 @@
 #include "object/native/Disk.h"
 #include "util/math/Random.h"
 
-Disk::Disk(const Vector3d & center, const Vector3d & orientation, float radius, Material * material) {
+Disk::Disk(const Vector3d & center, const Vector3d & orientation, float radius, Material * material) : Hittable(material) {
     c = center;
     o = orientation.getNormalized();
     r = radius;
-    this->material = material;
 }
 
 // note center c is on the disk plane, and orientation o is perpendicular to
@@ -31,7 +30,7 @@ bool Disk::hit(const Ray & rin, float tMin, float tMax, HitRecord * hitRec) {
                 hitRec->t = t;
                 hitRec->p = p;
                 hitRec->n = o;
-                hitRec->material = material;
+                hitRec->obj = this;
                 return true;
             }
         }

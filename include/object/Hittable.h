@@ -2,17 +2,17 @@
 #define SIMPLE_RAY_TRACER_HITTABLE_H
 
 #include "util/math/Vector3d.h"
-#include "material/Material.h"
 #include "util/model/Box.h"
+#include "material/Material.h"
+
+class Hittable;
 
 typedef struct HitRecord {
 
     // parameter of the incident light at p
-    float t;
+    float t{};
 
-    float u;
-
-    float v;
+    Hittable * obj{};
 
     // the hit point
     Vector3d p;
@@ -20,20 +20,19 @@ typedef struct HitRecord {
     // the normal vector at p
     Vector3d n;
 
-    // the material of the surface
-    Material * material;
-
-    HitRecord() {
-        t = u = v = -1;
-        material = nullptr;
-    }
-
 } HitRecord;
 
-// interface that must be implemented by all hittable objects
 class Hittable {
 
+protected:
+
+    Material * material;
+
 public:
+
+    explicit Hittable(Material * material);
+
+    Material * getMaterial();
 
     // return true and fill the hitRec if hit the object
     virtual bool hit(const Ray & rin, float tMin, float tMax, HitRecord * hitRec) = 0;

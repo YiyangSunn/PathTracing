@@ -16,9 +16,6 @@ private:
     // radius of the disk
     float r;
 
-    // material of the disk
-    Material * material;
-
 public:
 
     // orientation also used as the normal vector pointing from inside to outside

@@ -6,7 +6,7 @@ BVHTree::BVHTree(std::vector<Hittable *> * objs): BVHTree(objs, 0, objs->size() 
 
 }
 
-BVHTree::BVHTree(std::vector<Hittable *> * objs, int i, int j) {
+BVHTree::BVHTree(std::vector<Hittable *> * objs, int i, int j) : Hittable(nullptr) {
     if (i == j) {
         // only one object
         left = (*objs)[i];

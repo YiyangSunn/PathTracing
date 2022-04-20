@@ -10,24 +10,22 @@ endif()
 
 include_directories(../include)
 
-add_library(simple_ray_tracer_library SHARED
+add_library(srtlib SHARED
+        Configuration.cpp
         camera/Perspective.cpp
-        camera/DefocusBlur.cpp
+        light/Light.cpp
+        light/DiskLightZ.cpp
+        light/UniformDiskLightZ.cpp
+        light/GridDiskLightZ.cpp
+        material/Material.cpp
         material/Lambertian.cpp
         material/Metal.cpp
-        material/Dielectric.cpp
         material/DiffuseLight.cpp
-        object/HittableList.cpp
+        object/Hittable.cpp
         object/BVHTree.cpp
         object/native/Sphere.cpp
         object/native/Disk.cpp
-        object/native/Tube.cpp
-        object/native/Cylinder.cpp
-        object/native/Triangle.cpp
-        object/native/TriangularPyramid.cpp
         object/native/Rectangle.cpp
-        object/mesh/MeshUtil.cpp
-        object/mesh/MeshTriangle.cpp
         render/RayTracer.cpp
         util/image/ImageBuffer.cpp
         util/image/ImageUtil.cpp
@@ -35,27 +33,10 @@ add_library(simple_ray_tracer_library SHARED
         util/math/Vector3d.cpp
         util/model/Box.cpp
         util/model/Ray.cpp)
-target_link_libraries(simple_ray_tracer_library pthread)
+target_link_libraries(srtlib pthread)
 
-add_executable(random_spheres example/random_spheres.cpp)
-target_link_libraries(random_spheres simple_ray_tracer_library)
+add_executable(uniform_sampling example/uniform_sampling.cpp)
+target_link_libraries(uniform_sampling srtlib)
 
-add_executable(random_geometries example/random_geometries.cpp)
-target_link_libraries(random_geometries simple_ray_tracer_library)
-
-add_executable(basic_scene example/basic_scene.cpp)
-target_link_libraries(basic_scene simple_ray_tracer_library)
-
-add_executable(bottle_on_table example/bottle_on_table.cpp)
-target_link_libraries(bottle_on_table simple_ray_tracer_library)
-
-add_executable(metal_and_glass example/metal_and_glass.cpp)
-target_link_libraries(metal_and_glass simple_ray_tracer_library)
-
-add_executable(main main.cpp)
-target_link_libraries(main simple_ray_tracer_library)
-
-set(RESOURCE_FILES
-        ${CMAKE_SOURCE_DIR/resource/Tree.obj})
-set_target_properties(main PROPERTIES
-        RESOURCE "${RESOURCE_FILES}")
+add_executable(grid_sampling example/grid_sampling.cpp)
+target_link_libraries(grid_sampling srtlib)

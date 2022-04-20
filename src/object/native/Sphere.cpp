@@ -2,16 +2,14 @@
 
 #include "object/native/Sphere.h"
 
-Sphere::Sphere(float x, float y, float z, float r, Material * material) {
+Sphere::Sphere(float x, float y, float z, float r, Material * material) : Hittable(material) {
     c = {x, y, z};
     this->r = r;
-    this->material = material;
 }
 
-Sphere::Sphere(const Vector3d & c, float r, Material * material) {
+Sphere::Sphere(const Vector3d & c, float r, Material * material) : Hittable(material) {
     this->c = c;
     this->r = r;
-    this->material = material;
 }
 
 // we'll solve the equation (o + t * d - c) * (o + t * d - c) = r^2
@@ -47,7 +45,7 @@ bool Sphere::hit(const Ray & ray, float tMin, float tMax, HitRecord * hitRec) {
         hitRec->p = o + t * d;
         // note may be hit from the inside here
         hitRec->n = (hitRec->p - c).normalize();
-        hitRec->material = material;
+        hitRec->obj = this;
         return true;
     }
 

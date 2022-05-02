@@ -21,6 +21,12 @@ private:
     // maximum depth of recursion
     int maxDepth{10};
 
+    // number of samples on the disk light
+    int sampleOnLight{25};
+
+    // which sampler to use
+    std::string sampler;
+
     // output file name
     std::string outputFile{"output.ppm"};
 
@@ -39,6 +45,10 @@ public:
 
     Configuration * setDefaultMaxDepth(int maxDepth);
 
+    Configuration * setDefaultSampleOnLight(int sampleOnLight);
+
+    Configuration * setDefaultSampler(std::string sampler);
+
     Configuration * setDefaultOutputFile(const std::string & outputFile);
 
     int getWidth() const;
@@ -50,6 +60,10 @@ public:
     int getSamplePerPixel() const;
 
     int getMaxDepth() const;
+
+    int getSampleOnLight() const;
+
+    std::string getSampler() const;
 
     std::string getOutputFile() const;
 

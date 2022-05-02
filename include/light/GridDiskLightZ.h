@@ -9,13 +9,11 @@ class GridDiskLightZ: public DiskLightZ {
 
 private:
 
-    float interval;
-
     std::vector<Vector3d> samples;
 
 public:
 
-    GridDiskLightZ(const Vector3d & center, float radius, Material * material, float interval);
+    GridDiskLightZ(const Vector3d & center, float radius, Material * material, int count);
 
     Vector3d getSample() override;
 

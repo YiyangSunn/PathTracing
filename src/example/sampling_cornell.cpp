@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cassert>
 #include "Configuration.h"
 #include "object/Hittable.h"
 #include "light/Light.h"
@@ -14,19 +15,23 @@
 #include "util/image/ImageUtil.h"
 #include "material/DiffuseLight.h"
 #include "light/UniformDiskLightZ.h"
+#include "light/GridDiskLightZ.h"
+#include "light/BlueNoiseDiskLightZ.h"
 
 void build_cuboid(std::vector<Material *> * mats, std::vector<Hittable *> * objs, const Vector3d & leftBottom,
                   const Vector3d & rightTop, float theta);
 
 int main(int argc, char * argv[]) {
-    Configuration * conf = (new Configuration())
-            ->setDefaultWidth(600)
-            ->setDefaultHeight(600)
-            ->setDefaultMaxDepth(10)
-            ->setDefaultSamplePerPixel(20)
-            ->setDefaultThreadCount(5)
-            ->setDefaultOutputFile("uniform_sampling.ppm")
-            ->parseArgs(argc, argv);
+    auto * conf = new Configuration();
+    conf->setDefaultWidth(600)
+        ->setDefaultHeight(600)
+        ->setDefaultMaxDepth(10)
+        ->setDefaultSamplePerPixel(20)
+        ->setDefaultThreadCount(5)
+        ->setDefaultSampleOnLight(100)
+        ->setDefaultSampler("blue")
+        ->setDefaultOutputFile("sampling_cornell.ppm")
+        ->parseArgs(argc, argv);
 
     std::vector<Hittable *> objs;
     std::vector<Light *> lights;
@@ -54,7 +59,17 @@ int main(int argc, char * argv[]) {
 
     // 圆盘状光源
     mats.push_back(new DiffuseLight({4, 4, 4}));
-    lights.push_back(new UniformDiskLightZ({-5, 0, 9.99}, 1.5, mats.back()));
+    Light * diskLight = nullptr;
+    if (conf->getSampler() == "grid") {
+        diskLight = new GridDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else if (conf->getSampler() == "uniform") {
+        diskLight = new UniformDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else if (conf->getSampler() == "blue") {
+        diskLight = new BlueNoiseDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else {
+        assert(false);
+    }
+    lights.push_back(diskLight);
     objs.push_back(lights.back());
 
     // 左边长方体

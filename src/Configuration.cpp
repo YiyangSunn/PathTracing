@@ -1,5 +1,6 @@
 #include <getopt.h>
 #include <iostream>
+#include <utility>
 #include "Configuration.h"
 
 Configuration * Configuration::setDefaultHeight(int height) {
@@ -28,6 +29,16 @@ Configuration * Configuration::setDefaultThreadCount(int threadCount) {
     return this;
 }
 
+Configuration * Configuration::setDefaultSampleOnLight(int sampleOnLight) {
+    this->sampleOnLight = sampleOnLight;
+    return this;
+}
+
+Configuration * Configuration::setDefaultSampler(std::string sampler) {
+    this->sampler = std::move(sampler);
+    return this;
+}
+
 Configuration * Configuration::setDefaultOutputFile(const std::string & outputFile) {
     this->outputFile = outputFile;
     return this;
@@ -53,13 +64,21 @@ int Configuration::getMaxDepth() const {
     return maxDepth;
 }
 
+int Configuration::getSampleOnLight() const {
+    return sampleOnLight;
+}
+
+std::string Configuration::getSampler() const {
+    return sampler;
+}
+
 std::string Configuration::getOutputFile() const {
     return outputFile;
 }
 
 Configuration * Configuration::parseArgs(int argc, char ** argv) {
     // get input args
-    const char * opts = ":w:h:s:t:d:o:";
+    const char * opts = ":w:h:s:t:d:o:l:p:";
     int c = 0;
     while ((c = getopt(argc, argv, opts)) != EOF) {
         switch (c) {
@@ -78,6 +97,16 @@ Configuration * Configuration::parseArgs(int argc, char ** argv) {
             case 'd':
                 maxDepth = std::stoi(optarg);
                 break;
+            case 'l':
+                sampleOnLight = std::stoi(optarg);
+                break;
+            case 'p':
+                sampler = optarg;
+                if (sampler != "grid" && sampler != "uniform" && sampler != "blue") {
+                    std::cout << "Error: unknown sampler specified: " << sampler << std::endl;
+                    exit(-1);
+                }
+                break;
             case 'o':
                 outputFile = optarg;
                 break;
@@ -95,6 +124,8 @@ std::ostream & operator<<(std::ostream & out, const Configuration & conf) {
         << "    threadCount: " << conf.getThreadCount() << std::endl
         << "    samplePerPixel: " << conf.getSamplePerPixel() << std::endl
         << "    maxDepth: " << conf.getMaxDepth() << std::endl
+        << "    sampleOnLight: " << conf.getSampleOnLight() << std::endl
+        << "    sampler: " << conf.getSampler() << std::endl
         << "    outputFile: " << conf.getOutputFile() << std::endl
         << "}" << std::endl;
     return out;

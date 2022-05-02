@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <cassert>
 #include "Configuration.h"
 #include "object/Hittable.h"
 #include "light/Light.h"
@@ -13,20 +14,24 @@
 #include "render/RayTracer.h"
 #include "util/image/ImageUtil.h"
 #include "material/DiffuseLight.h"
+#include "light/UniformDiskLightZ.h"
 #include "light/GridDiskLightZ.h"
+#include "light/BlueNoiseDiskLightZ.h"
 
 void build_cuboid(std::vector<Material *> * mats, std::vector<Hittable *> * objs, const Vector3d & leftBottom,
                   const Vector3d & rightTop, float theta);
 
 int main(int argc, char * argv[]) {
-    Configuration * conf = (new Configuration())
-            ->setDefaultWidth(800)
-            ->setDefaultHeight(800)
-            ->setDefaultMaxDepth(15)
-            ->setDefaultSamplePerPixel(20)
-            ->setDefaultThreadCount(5)
-            ->setDefaultOutputFile("grid_sampling.ppm")
-            ->parseArgs(argc, argv);
+    auto * conf = new Configuration();
+    conf->setDefaultWidth(600)
+        ->setDefaultHeight(600)
+        ->setDefaultMaxDepth(15)
+        ->setDefaultSamplePerPixel(100)
+        ->setDefaultThreadCount(5)
+        ->setDefaultSampleOnLight(49)
+        ->setDefaultSampler("blue")
+        ->setDefaultOutputFile("sampling_box.ppm")
+        ->parseArgs(argc, argv);
 
     std::vector<Hittable *> objs;
     std::vector<Light *> lights;
@@ -34,37 +39,31 @@ int main(int argc, char * argv[]) {
 
     // 白色地板
     mats.push_back(new Lambertian({0.9, 0.9, 0.9}));
-    objs.push_back(new Rectangle({0, -5, 0}, {-10, 0, 0}, {0, 10, 0}, mats.back()));
-
-    // 白色天花板
-    mats.push_back(new Lambertian({0.9, 0.9, 0.9}));
-    objs.push_back(new Rectangle({0, -5, 10}, {0, 10, 0}, {-10, 0, 0}, mats.back()));
-
-    // 红色左墙
-    mats.push_back(new Lambertian({0.9, 0, 0}));
-    objs.push_back(new Rectangle({0, -5, 0}, {0, 0, 10}, {-10, 0, 0}, mats.back()));
-
-    // 绿色右墙
-    mats.push_back(new Lambertian({0, 0.9, 0}));
-    objs.push_back(new Rectangle({0, 5, 0}, {-10, 0, 0}, {0, 0, 10}, mats.back()));
-
-    // 白色后墙
-    mats.push_back(new Lambertian({0.9, 0.9, 0.9}));
-    objs.push_back(new Rectangle({-10, -5, 0}, {0, 0, 10}, {0, 10, 0}, mats.back()));
+    objs.push_back(new Rectangle({200, -200, 0}, {0, 400, 0}, {-400, 0, 0}, mats.back()));
 
     // 圆盘状光源
-    mats.push_back(new DiffuseLight({8, 8, 8}));
-    lights.push_back(new GridDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), 0.05));
+    mats.push_back(new DiffuseLight({10, 10, 10}));
+    Light * diskLight = nullptr;
+    if (conf->getSampler() == "grid") {
+        diskLight = new GridDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else if (conf->getSampler() == "uniform") {
+        diskLight = new UniformDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else if (conf->getSampler() == "blue") {
+        diskLight = new BlueNoiseDiskLightZ({-5, 0, 9.99}, 1.5, mats.back(), conf->getSampleOnLight());
+    } else {
+        assert(false);
+    }
+    lights.push_back(diskLight);
     objs.push_back(lights.back());
 
     // 左边长方体
-    build_cuboid(&mats, &objs, {-8, -3.5, 0}, {-5, -0.5, 6}, 15.f / 180 * 3.14159f);
+    build_cuboid(&mats, &objs, {-8, -3, 0}, {-5, 0, 6}, 15.f / 180 * 3.14159f);
 
     // 右边长方体
-    build_cuboid(&mats, &objs, {-5, 0, 0}, {-2, 3, 3}, -15.f / 180 * 3.14159f);
+    build_cuboid(&mats, &objs, {-5, 0.5, 0}, {-2, 3.5, 3}, -15.f / 180 * 3.14159f);
 
     // 照相机位置
-    Vector3d pos(14, 0, 5);
+    Vector3d pos(16, 0, 5);
     // 视线方向
     Vector3d view(-1, 0, 0);
     // z 轴向上

@@ -17,6 +17,7 @@ add_library(srtlib SHARED
         light/DiskLightZ.cpp
         light/UniformDiskLightZ.cpp
         light/GridDiskLightZ.cpp
+        light/BlueNoiseDiskLightZ.cpp
         material/Material.cpp
         material/Lambertian.cpp
         material/Metal.cpp
@@ -35,8 +36,11 @@ add_library(srtlib SHARED
         util/model/Ray.cpp)
 target_link_libraries(srtlib pthread)
 
-add_executable(uniform_sampling example/uniform_sampling.cpp)
-target_link_libraries(uniform_sampling srtlib)
+add_executable(sampling_cornell example/sampling_cornell.cpp)
+target_link_libraries(sampling_cornell srtlib)
 
-add_executable(grid_sampling example/grid_sampling.cpp)
-target_link_libraries(grid_sampling srtlib)
+add_executable(sampling_rect example/sampling_rect.cpp)
+target_link_libraries(sampling_rect srtlib)
+
+add_executable(sampling_box example/sampling_box.cpp)
+target_link_libraries(sampling_box srtlib)

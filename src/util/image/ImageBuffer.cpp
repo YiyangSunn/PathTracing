@@ -25,14 +25,14 @@ int ImageBuffer::getHeight() const {
 
 const Vector3d * ImageBuffer::operator[](int index) const {
     if (index < 0 || index >= height) {
-        return nullptr;
+        throw std::out_of_range("index exceeds height");
     }
     return buffer + index * width;
 }
 
 Vector3d * ImageBuffer::operator[](int index) {
     if (index < 0 || index >= height) {
-        return nullptr;
+        throw std::out_of_range("index exceeds height");
     }
     return buffer + index * width;
 }

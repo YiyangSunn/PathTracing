@@ -3,15 +3,13 @@
 
 #include "util/model/Ray.h"
 
-// top interface for all camera objects
+// interface for all camera objects
 class Camera {
 
 public:
 
     // get the ray pointing from the view point to the image plane
     virtual Ray getRay(float x, float y) = 0;
-
-    virtual ~Camera() = default;
 
 };
 

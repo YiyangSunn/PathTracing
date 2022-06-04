@@ -19,10 +19,6 @@ public:
 
     Vector3d getDirection() const;
 
-    void setOrigin(const Vector3d & origin);
-
-    void setDirection(const Vector3d & direction);
-
 };
 
 std::ostream & operator<<(std::ostream & out, const Ray & r);

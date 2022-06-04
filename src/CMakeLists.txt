@@ -12,35 +12,36 @@ include_directories(../include)
 
 add_library(srtlib SHARED
         Configuration.cpp
-        camera/Perspective.cpp
-        light/Light.cpp
-        light/DiskLightZ.cpp
-        light/UniformDiskLightZ.cpp
-        light/GridDiskLightZ.cpp
-        light/BlueNoiseDiskLightZ.cpp
-        material/Material.cpp
+        camera/AbstractCamera.cpp
+        camera/PerspectiveCamera.cpp
+        material/Emission.cpp
         material/Lambertian.cpp
-        material/Metal.cpp
-        material/DiffuseLight.cpp
-        object/Hittable.cpp
-        object/BVHTree.cpp
-        object/native/Sphere.cpp
-        object/native/Disk.cpp
-        object/native/Rectangle.cpp
-        render/RayTracer.cpp
+        material/TorranceSparrow.cpp
+        render/PathTracer.cpp
+        render/LightSampler.cpp
+        render/BRDFSampler.cpp
+        render/MISampler.cpp
+        scene/Object.cpp
+        scene/Scene.cpp
+        surface/Triangle.cpp
+        texture/ConstantTexture.cpp
+        util/accelerator/BVH.cpp
         util/image/ImageBuffer.cpp
         util/image/ImageUtil.cpp
         util/math/Random.cpp
         util/math/Vector3d.cpp
+        util/mesh/OBJFile.cpp
         util/model/Box.cpp
-        util/model/Ray.cpp)
+        util/model/Ray.cpp
+)
+
 target_link_libraries(srtlib pthread)
 
-add_executable(sampling_cornell example/sampling_cornell.cpp)
-target_link_libraries(sampling_cornell srtlib)
+add_executable(4_lights example/4_lights.cpp)
+target_link_libraries(4_lights srtlib)
 
-add_executable(sampling_rect example/sampling_rect.cpp)
-target_link_libraries(sampling_rect srtlib)
+add_executable(cube example/cube.cpp)
+target_link_libraries(cube srtlib)
 
-add_executable(sampling_box example/sampling_box.cpp)
-target_link_libraries(sampling_box srtlib)
+add_executable(sphere example/sphere.cpp)
+target_link_libraries(sphere srtlib)

@@ -1,20 +1,13 @@
-#ifndef SIMPLE_RAY_TRACER_LAMBERTIAN_H
-#define SIMPLE_RAY_TRACER_LAMBERTIAN_H
+#ifndef SIMPLE_RAY_TRACER_EMISSION_H
+#define SIMPLE_RAY_TRACER_EMISSION_H
 
 #include "Material.h"
-#include "util/math/Random.h"
 
-class Lambertian: public Material {
-
-private:
-
-    Random randR1;
-
-    Random randR2;
+class Emission: public Material {
 
 public:
 
-    explicit Lambertian(Texture * texture);
+    explicit Emission(Texture * texture);
 
     Vector3d getBRDF(const Vector3d & wi, const Vector3d & wo, const HitResult & hitResult) override;
 
@@ -26,8 +19,8 @@ public:
 
     Vector3d getEmitting(const Vector3d & wi, const HitResult & hitResult) override;
 
-    ~Lambertian() override = default;
+    ~Emission() override = default;
 
 };
 
-#endif //SIMPLE_RAY_TRACER_LAMBERTIAN_H
+#endif //SIMPLE_RAY_TRACER_EMISSION_H

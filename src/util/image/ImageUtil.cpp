@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdio>
 #include "util/image/ImageUtil.h"
 
 void ImageUtil::writePPM(const ImageBuffer & im, const std::string & filename, int type) {

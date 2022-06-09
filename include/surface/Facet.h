@@ -1,8 +1,8 @@
 #ifndef SIMPLE_RAY_TRACER_FACET_H
 #define SIMPLE_RAY_TRACER_FACET_H
 
-#include "util/model/Ray.h"
-#include "util/model/Box.h"
+#include "util/Ray.h"
+#include "util/AABB.h"
 
 class HitResult;
 
@@ -30,11 +30,11 @@ public:
 
     virtual float getArea() = 0;
 
-    virtual Vector3d getSample(float * pdf) = 0;
+    virtual Vector3f getSample(float * pdf) = 0;
 
-    virtual float getPdf(const Vector3d & p) = 0;
+    virtual float getPdf(const Vector3f & p) = 0;
 
-    virtual Box getBoundingBox() = 0;
+    virtual AABB getBoundingBox() = 0;
 
     virtual Material * getMaterial() {return material;}
 
@@ -53,18 +53,18 @@ public:
     float v;
 
     // the hit point
-    Vector3d p;
+    Vector3f p;
 
     // the normal vector
-    Vector3d n;
+    Vector3f n;
 
     // the hit surface
     Facet * facet;
 
     HitResult() {
         t = u = v = -1;
-        p = Vector3d(0, 0, 0);
-        n = Vector3d(0, 0, 0);
+        p = Vector3f(0, 0, 0);
+        n = Vector3f(0, 0, 0);
         facet = nullptr;
     }
 

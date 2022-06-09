@@ -1,9 +1,9 @@
 #include "texture/ConstantTexture.h"
 
-ConstantTexture::ConstantTexture(const Vector3d & albedo) {
+ConstantTexture::ConstantTexture(const Vector3f & albedo) {
     this->albedo = albedo;
 }
 
-Vector3d ConstantTexture::getValue(float u, float v, const Vector3d & p) {
+Vector3f ConstantTexture::getValue(float u, float v, const Vector3f & p) {
     return albedo;
 }

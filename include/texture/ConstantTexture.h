@@ -7,13 +7,13 @@ class ConstantTexture: public Texture {
 
 private:
 
-    Vector3d albedo;
+    Vector3f albedo;
 
 public:
 
-    explicit ConstantTexture(const Vector3d & albedo);
+    explicit ConstantTexture(const Vector3f & albedo);
 
-    Vector3d getValue(float u, float v, const Vector3d & p) override;
+    Vector3f getValue(float u, float v, const Vector3f & p) override;
 
     virtual ~ConstantTexture() = default;
 

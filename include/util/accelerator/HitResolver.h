@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "util/model/Ray.h"
+#include "util/Ray.h"
 #include "surface/Facet.h"
 
 // interface

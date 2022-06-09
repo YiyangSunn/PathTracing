@@ -1,6 +1,7 @@
 #ifndef SIMPLE_RAY_TRACER_IMAGEUTIL_H
 #define SIMPLE_RAY_TRACER_IMAGEUTIL_H
 
+#include <string>
 #include "ImageBuffer.h"
 
 // static utility class that supports image manipulation

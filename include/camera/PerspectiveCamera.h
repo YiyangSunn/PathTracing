@@ -7,7 +7,7 @@ class PerspectiveCamera: public AbstractCamera {
 
 public:
 
-    PerspectiveCamera(const Vector3d &pos, const Vector3d & view, const Vector3d & up, float dist, float width, float height);
+    PerspectiveCamera(const Vector3f &pos, const Vector3f & view, const Vector3f & up, float dist, float width, float height);
 
     // (x, y) means that you're sampling the point at (width * x, height * y) on the image plane
     Ray getRay(float x, float y) override;

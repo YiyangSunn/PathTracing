@@ -17,7 +17,7 @@
 int main() {
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
-    OBJFile * file = new OBJFile("../resources/4_lights.obj");
+    OBJFile * file = new OBJFile("../resource/4_lights.obj");
 
     Texture * texture_1 = new ConstantTexture({1.f, 0.219f, 0.563f});
     Material * mat_1 = new Emission(texture_1);
@@ -44,9 +44,9 @@ int main() {
     Object * light_5 = file->loadObject("light_5_Plane", mat_5);
     scene->addLight(light_5);
 
-    Vector3d wall_albedo(1.f, 1.f, 1.f);
+    Vector3f wall_albedo(1.f, 1.f, 1.f);
 
-    Vector3d f0(0.16f, 0.16f, 0.16f);
+    Vector3f f0(0.16f, 0.16f, 0.16f);
 
     Texture * texture_6 = new ConstantTexture(wall_albedo);
     Material * mat_6 = new Lambertian(texture_6);
@@ -96,9 +96,9 @@ int main() {
 
     scene->build();
 
-    Vector3d pos(-0.091733f, 10.f, 6.92956f);
-    Vector3d tar(-0.1003f, 0, 4.6748f);
-    Vector3d up(0, 0, 1);
+    Vector3f pos(-0.091733f, 10.f, 6.92956f);
+    Vector3f tar(-0.1003f, 0, 4.6748f);
+    Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar - pos, up, 5.8, 3, 3);
 
     ImageBuffer * im = new ImageBuffer(100, 100);

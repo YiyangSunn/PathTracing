@@ -16,14 +16,14 @@
 int main() {
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
-    OBJFile * file = new OBJFile("../resources/sphere.obj");
+    OBJFile * file = new OBJFile("../resource/sphere.obj");
 
-    Vector3d f0(1.0f, 0.71f, 0.29f);
+    Vector3f f0(1.0f, 0.71f, 0.29f);
     Material * mat_1 = new TorranceSparrow(f0, 0.5, nullptr);
     Object * sphere = file->loadObject("Sphere", mat_1);
     scene->addObject(sphere);
 
-    Vector3d wall_albedo(0.8, 0.8, 0.8);
+    Vector3f wall_albedo(0.8, 0.8, 0.8);
 
     Texture * texture_2 = new ConstantTexture(wall_albedo);
     Material * mat_2 = new Lambertian(texture_2);
@@ -55,7 +55,7 @@ int main() {
     Object * wall_6 = file->loadObject("wall_6_Plane", mat_7);
     scene->addObject(wall_6);
 
-    Vector3d intensity(1.f, 1.f, 1.f);
+    Vector3f intensity(1.f, 1.f, 1.f);
 
     Texture * texture_8 = new ConstantTexture(intensity);
     Material * mat_8 = new Emission(texture_8);
@@ -79,9 +79,9 @@ int main() {
 
     scene->build();
 
-    Vector3d pos(0, -6.9258f, 0);
-    Vector3d tar(0, 0, 0);
-    Vector3d up(0, 0, 1);
+    Vector3f pos(0, -6.9258f, 0);
+    Vector3f tar(0, 0, 0);
+    Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar - pos, up, 2.6, 3.2, 3.2);
 
     ImageBuffer * im = new ImageBuffer(180, 180);
@@ -91,7 +91,7 @@ int main() {
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "sphere_path_brdf.ppm", 6);
+    ImageUtil::writePPM(*im, "sphere_path_brdf_1.ppm", 6);
 
     return 0;
 }

@@ -9,13 +9,13 @@ class Triangle: public Facet {
 private:
 
     // three vertices
-    Vector3d vs[3];
+    Vector3f vs[3];
 
     // three normals
-    Vector3d ns[3];
+    Vector3f ns[3];
 
     // three uv coordinates
-    Vector3d uvs[3];
+    Vector3f uvs[3];
 
     Random randR1;
 
@@ -24,20 +24,20 @@ private:
 public:
 
     Triangle(
-            const Vector3d & v1, const Vector3d & v2, const Vector3d & v3,
-            const Vector3d & n1, const Vector3d & n2, const Vector3d & n3,
-            const Vector3d & uv1, const Vector3d & uv2, const Vector3d & uv3,
+            const Vector3f & v1, const Vector3f & v2, const Vector3f & v3,
+            const Vector3f & n1, const Vector3f & n2, const Vector3f & n3,
+            const Vector3f & uv1, const Vector3f & uv2, const Vector3f & uv3,
             Object * parent, Material * material);
 
     bool hit(const Ray & rin, float tMin, float tMax, HitResult * hitResult) override;
 
     float getArea() override;
 
-    Vector3d getSample(float * pdf) override;
+    Vector3f getSample(float * pdf) override;
 
-    float getPdf(const Vector3d & p) override;
+    float getPdf(const Vector3f & p) override;
 
-    Box getBoundingBox() override;
+    AABB getBoundingBox() override;
 
     ~Triangle() override = default;
 

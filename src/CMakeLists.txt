@@ -29,11 +29,8 @@ add_library(srtlib SHARED
         util/image/ImageBuffer.cpp
         util/image/ImageUtil.cpp
         util/math/Random.cpp
-        util/math/Vector3d.cpp
         util/mesh/OBJFile.cpp
-        util/model/Box.cpp
-        util/model/Ray.cpp
-)
+        )
 
 target_link_libraries(srtlib pthread)
 

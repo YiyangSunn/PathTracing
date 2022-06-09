@@ -8,16 +8,16 @@ class AbstractCamera: public Camera {
 protected:
 
     // position of the camera, or view point
-    Vector3d e;
+    Vector3f e;
 
     // the direction along width
-    Vector3d u;
+    Vector3f u;
 
     // the direction along height
-    Vector3d v;
+    Vector3f v;
 
     // w points to -view
-    Vector3d w;
+    Vector3f w;
 
     // distance between view point and the image plane
     float d;
@@ -31,7 +31,7 @@ protected:
 public:
 
     // view, up should be normalized
-    AbstractCamera(const Vector3d & pos, const Vector3d & view, const Vector3d & up, float dist, float width, float height);
+    AbstractCamera(const Vector3f & pos, const Vector3f & view, const Vector3f & up, float dist, float width, float height);
 
     virtual ~AbstractCamera() = default;
 

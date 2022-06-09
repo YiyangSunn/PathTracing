@@ -16,15 +16,15 @@ public:
 
     explicit Lambertian(Texture * texture);
 
-    Vector3d getBRDF(const Vector3d & wi, const Vector3d & wo, const HitResult & hitResult) override;
+    Vector3f getBRDF(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) override;
 
-    Vector3d sampleBRDF(const Vector3d & wo, float * pdf, const HitResult & hitResult) override;
+    Vector3f sampleBRDF(const Vector3f & wo, float * pdf, const HitResult & hitResult) override;
 
-    float getPdf(const Vector3d & wi, const Vector3d & wo, const HitResult & hitResult) override;
+    float getPdf(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) override;
 
     bool isEmitting() override;
 
-    Vector3d getEmitting(const Vector3d & wi, const HitResult & hitResult) override;
+    Vector3f getEmitting(const Vector3f & wi, const HitResult & hitResult) override;
 
     ~Lambertian() override = default;
 

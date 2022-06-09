@@ -13,11 +13,11 @@ private:
 
     std::ifstream fin;
 
-    std::vector<Vector3d> vs;
+    std::vector<Vector3f> vs;
 
-    std::vector<Vector3d> uvs;
+    std::vector<Vector3f> uvs;
 
-    std::vector<Vector3d> ns;
+    std::vector<Vector3f> ns;
 
     void locateObject(const std::string & objName);
 

@@ -1,7 +1,7 @@
 #ifndef SIMPLE_RAY_TRACER_CAMERA_H
 #define SIMPLE_RAY_TRACER_CAMERA_H
 
-#include "util/model/Ray.h"
+#include "util/Ray.h"
 
 // interface for all camera objects
 class Camera {

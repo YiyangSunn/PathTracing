@@ -67,7 +67,7 @@ void BRDFSampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int 
     int height = im->getHeight();
     for (int i = 1; i <= height; ++i) {
         for (int j = 1; j <= width; ++j) {
-            Vector3d color(0, 0, 0);
+            Vector3f color(0, 0, 0);
             for (int k = 0; k < spp; ++k) {
                 float dx = randX.randFloat(-0.5, 0.5);
                 float x = ((float) j + dx) / (float) (width + 1);
@@ -81,7 +81,7 @@ void BRDFSampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int 
     }
 }
 
-Vector3d BRDFSampler::trace0(const Ray & ray, Scene * scene) {
+Vector3f BRDFSampler::trace0(const Ray & ray, Scene * scene) {
     HitResult hitResult;
     if (scene->hitObject(ray, 1e-3, FLT_MAX, &hitResult)) {
         // 计算击中点的颜色
@@ -91,7 +91,7 @@ Vector3d BRDFSampler::trace0(const Ray & ray, Scene * scene) {
     return {0, 0, 0};
 }
 
-Vector3d BRDFSampler::shade0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
+Vector3f BRDFSampler::shade0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
     Material * material = hitResult.facet->getMaterial();
     // 如果击中光源（发光材质），只有一个 L_e 项
     if (material->isEmitting()) {
@@ -101,11 +101,11 @@ Vector3d BRDFSampler::shade0(const Vector3d & wo, Scene * scene, const HitResult
     return sampleBRDF0(wo, scene, hitResult);
 }
 
-Vector3d BRDFSampler::sampleBRDF0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
+Vector3f BRDFSampler::sampleBRDF0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
     float p2 = 0;
     Material * material = hitResult.facet->getMaterial();
-    Vector3d d = material->sampleBRDF(wo, &p2, hitResult);
-    Vector3d n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
+    Vector3f d = material->sampleBRDF(wo, &p2, hitResult);
+    Vector3f n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
     // 如果采样的方向在表面以下，应当返回 0
     if (d.dot(n) < 0) {
         return {0, 0, 0};
@@ -117,11 +117,11 @@ Vector3d BRDFSampler::sampleBRDF0(const Vector3d & wo, Scene * scene, const HitR
         // 只有击中光源才有颜色
         Material * nextMat = nextHit.facet->getMaterial();
         if (nextMat->isEmitting()) {
-            Vector3d wi = -d;
+            Vector3f wi = -d;
             // 计算 Li
-            Vector3d Li = nextMat->getEmitting(wi, hitResult);
+            Vector3f Li = nextMat->getEmitting(wi, hitResult);
             // 计算 fr
-            Vector3d fr = material->getBRDF(wi, wo, hitResult);
+            Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 cosine
             float cos = d.dot(n);
             // 累加到 Lo

@@ -1,13 +1,13 @@
 #ifndef SIMPLE_RAY_TRACER_TEXTURE_H
 #define SIMPLE_RAY_TRACER_TEXTURE_H
 
-#include "util/math/Vector3d.h"
+#include "util/Vector3f.h"
 
 class Texture {
 
 public:
 
-    virtual Vector3d getValue(float u, float v, const Vector3d & p) = 0;
+    virtual Vector3f getValue(float u, float v, const Vector3f & p) = 0;
 
 };
 

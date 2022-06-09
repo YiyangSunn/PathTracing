@@ -16,9 +16,9 @@
 int main() {
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
-    OBJFile * file = new OBJFile("../resources/cube.obj");
+    OBJFile * file = new OBJFile("../resource/cube.obj");
 
-    Vector3d f0(1.0f, 0.71f, 0.29f);
+    Vector3f f0(1.0f, 0.71f, 0.29f);
     Material * mat_1 = new TorranceSparrow(f0, 0.5, nullptr);
     Object * cube = file->loadObject("Cube", mat_1);
     scene->addObject(cube);
@@ -35,9 +35,9 @@ int main() {
 
     scene->build();
 
-    Vector3d pos(6.8245f, -6.9258f, 5.1106f);
-    Vector3d tar(0, 0, 0);
-    Vector3d up(0, 0, 1);
+    Vector3f pos(6.8245f, -6.9258f, 5.1106f);
+    Vector3f tar(0, 0, 0);
+    Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar - pos, up, 5.5, 3.2, 1.8);
 
     ImageBuffer * im = new ImageBuffer(480, 270);

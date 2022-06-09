@@ -68,7 +68,7 @@ void MISampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int sp
     int height = im->getHeight();
     for (int i = 1; i <= height; ++i) {
         for (int j = 1; j <= width; ++j) {
-            Vector3d color(0, 0, 0);
+            Vector3f color(0, 0, 0);
             for (int k = 0; k < spp; ++k) {
                 float dx = randX.randFloat(-0.5, 0.5);
                 float x = ((float) j + dx) / (float) (width + 1);
@@ -82,7 +82,7 @@ void MISampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int sp
     }
 }
 
-Vector3d MISampler::trace0(const Ray & ray, Scene * scene) {
+Vector3f MISampler::trace0(const Ray & ray, Scene * scene) {
     HitResult hitResult;
     if (scene->hitObject(ray, 1e-3, FLT_MAX, &hitResult)) {
         // 计算击中点的颜色
@@ -92,29 +92,29 @@ Vector3d MISampler::trace0(const Ray & ray, Scene * scene) {
     return {0, 0, 0};
 }
 
-Vector3d MISampler::shade0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
+Vector3f MISampler::shade0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
     Material * material = hitResult.facet->getMaterial();
     // 如果击中光源（发光材质），只有一个 L_e 项
     if (material->isEmitting()) {
         return material->getEmitting(wo, hitResult);
     }
     // 否则击中一个普通物体，先采样光源
-    Vector3d Lo = sampleLight0(wo, scene, hitResult);
+    Vector3f Lo = sampleLight0(wo, scene, hitResult);
     // 再采样 BRDF（采样的返回值已经按照 MIS 进行加权）
     Lo += sampleBRDF0(wo, scene, hitResult);
     return Lo;
 }
 
-Vector3d MISampler::sampleLight0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
-    Vector3d Lo(0, 0, 0);
+Vector3f MISampler::sampleLight0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
+    Vector3f Lo(0, 0, 0);
     Material * material = hitResult.facet->getMaterial();
     for (Object * lit: scene->getLights()) {
         // 光源上采样一点
         float p1 = 0;
         Facet * facet = nullptr;
-        Vector3d p = lit->sampleSurface(&p1, &facet);
+        Vector3f p = lit->sampleSurface(&p1, &facet);
         // d 代表采样方向 wi
-        Vector3d d = p - hitResult.p;
+        Vector3f d = p - hitResult.p;
         // 计算击中点到光源采样点的距离平方
         float rsq = d.dot(d);
         // 如果背对光源应该是 0
@@ -130,15 +130,15 @@ Vector3d MISampler::sampleLight0(const Vector3d & wo, Scene * scene, const HitRe
                 continue;
             }
             // 入射方向
-            Vector3d wi = -r.getDirection();
+            Vector3f wi = -r.getDirection();
             // 按照 BRDF 采样到此方向的概率密度
             float p2 = material->getPdf(wi, wo, hitResult);
             // 计算 MIS 中的权重，使用平方策略
             float w = p1 * p1 / (p1 * p1 + p2 * p2);
             // 计算 fr
-            Vector3d fr = material->getBRDF(wi, wo, hitResult);
+            Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 Li
-            Vector3d Li = facet->getMaterial()->getEmitting(wi, result);
+            Vector3f Li = facet->getMaterial()->getEmitting(wi, result);
             // 计算两个 cosine
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));
@@ -149,11 +149,11 @@ Vector3d MISampler::sampleLight0(const Vector3d & wo, Scene * scene, const HitRe
     return Lo;
 }
 
-Vector3d MISampler::sampleBRDF0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
+Vector3f MISampler::sampleBRDF0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
     float p2 = 0;
     Material * material = hitResult.facet->getMaterial();
-    Vector3d d = material->sampleBRDF(wo, &p2, hitResult);
-    Vector3d n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
+    Vector3f d = material->sampleBRDF(wo, &p2, hitResult);
+    Vector3f n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
     if (d.dot(n) < 0) {
         return {0, 0, 0};
     }
@@ -169,11 +169,11 @@ Vector3d MISampler::sampleBRDF0(const Vector3d & wo, Scene * scene, const HitRes
             // 计算 MIS 的权重
             float w = p2 * p2 / (p1 * p1 + p2 * p2);
             // 入射角
-            Vector3d wi = -d;
+            Vector3f wi = -d;
             // 计算 Li
-            Vector3d Li = nextMat->getEmitting(wi, hitResult);
+            Vector3f Li = nextMat->getEmitting(wi, hitResult);
             // 计算 fr
-            Vector3d fr = material->getBRDF(wi, wo, hitResult);
+            Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 cosine
             float cos = std::abs(d.dot(hitResult.n));
             // 累加到 Lo

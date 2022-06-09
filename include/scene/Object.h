@@ -22,9 +22,9 @@ public:
 
     const std::vector<Facet *> & getSurfaces() const;
 
-    Vector3d sampleSurface(float * pdf, Facet ** pFacet);
+    Vector3f sampleSurface(float * pdf, Facet ** pFacet);
 
-    float getPdf(Facet * surf, const Vector3d & p);
+    float getPdf(Facet * surf, const Vector3f & p);
 
     virtual ~Object();
 

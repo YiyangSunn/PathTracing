@@ -75,7 +75,7 @@ void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int s
     int height = im->getHeight();
     for (int i = 1; i <= height; ++i) {
         for (int j = 1; j <= width; ++j) {
-            Vector3d color(0, 0, 0);
+            Vector3f color(0, 0, 0);
             for (int k = 0; k < spp; ++k) {
                 float dx = randX.randFloat(-0.5, 0.5);
                 float x = ((float) j + dx) / (float) (width + 1);
@@ -83,7 +83,7 @@ void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int s
                 float dy = randY.randFloat(-0.5, 0.5);
                 float y = 1.f - ((float) i + dy) / (float) (height + 1);
 
-//                Vector3d dc = trace0(camera->getRay(x, y), scene, maxDepth);
+//                Vector3f dc = trace0(camera->getRay(x, y), scene, maxDepth);
 //                color = (1 - 0.75f) * color + 0.75f * dc;
                 color += trace0(camera->getRay(x, y), scene, maxDepth);
             }
@@ -96,7 +96,7 @@ void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int s
     }
 }
 
-Vector3d PathTracer::trace0(const Ray & ray, Scene * scene, int maxDepth) {
+Vector3f PathTracer::trace0(const Ray & ray, Scene * scene, int maxDepth) {
     HitResult hitResult;
     if (scene->hitObject(ray, 1e-3, FLT_MAX, &hitResult)) {
         // 计算击中点的颜色
@@ -106,29 +106,29 @@ Vector3d PathTracer::trace0(const Ray & ray, Scene * scene, int maxDepth) {
     return {0, 0, 0};
 }
 
-Vector3d PathTracer::shade0(const Vector3d & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult) {
+Vector3f PathTracer::shade0(const Vector3f & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult) {
     Material * material = hitResult.facet->getMaterial();
     // 如果击中光源（发光材质），只有一个 L_e 项
     if (material->isEmitting()) {
         return material->getEmitting(wo, hitResult);
     }
     // 否则击中一个普通物体，先采样光源
-    Vector3d Lo = sampleLight0(wo, scene, hitResult);
+    Vector3f Lo = sampleLight0(wo, scene, hitResult);
     // 再采样 BRDF
     Lo += sampleBRDF0(wo, scene, maxDepth, depth, hitResult);
     return Lo;
 }
 
-Vector3d PathTracer::sampleLight0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
-    Vector3d Lo(0, 0, 0);
+Vector3f PathTracer::sampleLight0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
+    Vector3f Lo(0, 0, 0);
     Material * material = hitResult.facet->getMaterial();
     for (Object * lit: scene->getLights()) {
         // 光源上采样一点
         float p1 = 0;
         Facet * facet = nullptr;
-        Vector3d p = lit->sampleSurface(&p1, &facet);
+        Vector3f p = lit->sampleSurface(&p1, &facet);
         // d 代表采样方向 wi
-        Vector3d d = p - hitResult.p;
+        Vector3f d = p - hitResult.p;
         // 计算击中点到光源采样点的距离平方
         float rsq = d.dot(d);
         if (rsq < 1) {
@@ -147,15 +147,15 @@ Vector3d PathTracer::sampleLight0(const Vector3d & wo, Scene * scene, const HitR
                 continue;
             }
             // 入射方向
-            Vector3d wi = -r.getDirection();
+            Vector3f wi = -r.getDirection();
             // 按照 BRDF 采样到此方向的概率密度
             float p2 = material->getPdf(wi, wo, hitResult);
             // 计算 MIS 中的权重，使用平方策略
             float w = p1 * p1 / (p1 * p1 + p2 * p2);
             // 计算 fr
-            Vector3d fr = material->getBRDF(wi, wo, hitResult);
+            Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 Li
-            Vector3d Li = facet->getMaterial()->getEmitting(wi, result);
+            Vector3f Li = facet->getMaterial()->getEmitting(wi, result);
             // 计算两个 cosine
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));
@@ -167,12 +167,12 @@ Vector3d PathTracer::sampleLight0(const Vector3d & wo, Scene * scene, const HitR
     return Lo;
 }
 
-Vector3d PathTracer::sampleBRDF0(const Vector3d & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult) {
+Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult) {
     float p2 = 0;
-    Vector3d Lo(0, 0, 0);
+    Vector3f Lo(0, 0, 0);
     Material * material = hitResult.facet->getMaterial();
-    Vector3d d = material->sampleBRDF(wo, &p2, hitResult);
-    Vector3d n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
+    Vector3f d = material->sampleBRDF(wo, &p2, hitResult);
+    Vector3f n = wo.dot(hitResult.n) < 0 ? -hitResult.n : hitResult.n;
     // 如果采样的方向在表面以下，应当返回 0
     if (d.dot(n) < 0) {
         return {0, 0, 0};
@@ -180,10 +180,10 @@ Vector3d PathTracer::sampleBRDF0(const Vector3d & wo, Scene * scene, int maxDept
     // 下一条追踪光线
     Ray nextRay = {hitResult.p, d};
     HitResult nextHit;
-    Vector3d wi = -d;
+    Vector3f wi = -d;
     if (scene->hitObject(nextRay, 1e-3, FLT_MAX, &nextHit)) {
         // 计算 fr
-        Vector3d fr = material->getBRDF(wi, wo, hitResult);
+        Vector3f fr = material->getBRDF(wi, wo, hitResult);
         // 计算 cosine
         float cos = d.dot(n);
         // 看是否击中光源
@@ -192,23 +192,23 @@ Vector3d PathTracer::sampleBRDF0(const Vector3d & wo, Scene * scene, int maxDept
         if (mat->isEmitting()) {
             // 如果击中的是光源
             float p1 = 0;
-            Vector3d dist = (nextHit.p - hitResult.p);
+            Vector3f dist = (nextHit.p - hitResult.p);
             if (dist.dot(dist) >= 1) {
                 p1 = facet->getObject()->getPdf(facet, nextHit.p);
             }
             // 计算 MIS 的权重
             float w = p2 * p2 / (p1 * p1 + p2 * p2);
             // 计算 Li
-            Vector3d Li = mat->getEmitting(wi, hitResult);
+            Vector3f Li = mat->getEmitting(wi, hitResult);
             // 累加到 Lo
             Lo += w * Li * fr * cos / p2;
-//            Vector3d v = nextHit.p - hitResult.p;
+//            Vector3f v = nextHit.p - hitResult.p;
 //            float rsq = v.dot(v);
 //            if (rsq >= 1) {
 //                return {0, 0, 0};
 //            }
 //
-//            Vector3d Li = mat->getEmitting(wi, hitResult);
+//            Vector3f Li = mat->getEmitting(wi, hitResult);
 //            return Li * fr * cos / p2;
         } else {
 //            // 计算轮盘赌
@@ -222,7 +222,7 @@ Vector3d PathTracer::sampleBRDF0(const Vector3d & wo, Scene * scene, int maxDept
                 return {0, 0, 0};
             }
             // 计算 Li
-            Vector3d Li = shade0(wi, scene, maxDepth, depth + 1, nextHit);
+            Vector3f Li = shade0(wi, scene, maxDepth, depth + 1, nextHit);
             // 累加到 Lo
             Lo += Li * fr * cos / p2;
 

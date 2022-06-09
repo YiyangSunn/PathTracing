@@ -23,13 +23,13 @@ private:
 
     static void render0(Camera * camera, Scene * scene, ImageBuffer * im, int spp, int maxDepth);
 
-    static Vector3d trace0(const Ray & ray, Scene * scene, int maxDepth);
+    static Vector3f trace0(const Ray & ray, Scene * scene, int maxDepth);
 
-    static Vector3d shade0(const Vector3d & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult);
+    static Vector3f shade0(const Vector3f & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult);
 
-    static Vector3d sampleLight0(const Vector3d & wo, Scene * scene, const HitResult & hitResult);
+    static Vector3f sampleLight0(const Vector3f & wo, Scene * scene, const HitResult & hitResult);
 
-    static Vector3d sampleBRDF0(const Vector3d & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult);
+    static Vector3f sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult);
 
 public:
 

@@ -15,7 +15,7 @@ private:
 
 protected:
 
-    Box boundingBox;
+    AABB boundingBox;
 
 public:
 
@@ -23,7 +23,7 @@ public:
 
     explicit BVHNode(std::vector<Facet *> * surfaces, int i, int j);
 
-    Box getBoundingBox();
+    AABB getBoundingBox();
 
     virtual bool hitNode(const Ray & rin, float tMin, float tMax, HitResult * result);
 

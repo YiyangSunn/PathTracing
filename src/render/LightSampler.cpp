@@ -68,7 +68,7 @@ void LightSampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int
     int height = im->getHeight();
     for (int i = 1; i <= height; ++i) {
         for (int j = 1; j <= width; ++j) {
-            Vector3d color(0, 0, 0);
+            Vector3f color(0, 0, 0);
             for (int k = 0; k < spp; ++k) {
                 float dx = randX.randFloat(-0.5, 0.5);
                 float x = ((float) j + dx) / (float) (width + 1);
@@ -82,7 +82,7 @@ void LightSampler::render0(Camera * camera, Scene * scene, ImageBuffer * im, int
     }
 }
 
-Vector3d LightSampler::trace0(const Ray & ray, Scene * scene) {
+Vector3f LightSampler::trace0(const Ray & ray, Scene * scene) {
     HitResult hitResult;
     if (scene->hitObject(ray, 1e-3, FLT_MAX, &hitResult)) {
         // 计算击中点的颜色
@@ -92,7 +92,7 @@ Vector3d LightSampler::trace0(const Ray & ray, Scene * scene) {
     return {0, 0, 0};
 }
 
-Vector3d LightSampler::shade0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
+Vector3f LightSampler::shade0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
     Material * material = hitResult.facet->getMaterial();
     // 如果击中光源（发光材质），只有一个 L_e 项
     if (material->isEmitting()) {
@@ -102,16 +102,16 @@ Vector3d LightSampler::shade0(const Vector3d & wo, Scene * scene, const HitResul
     return sampleLight0(wo, scene, hitResult);
 }
 
-Vector3d LightSampler::sampleLight0(const Vector3d & wo, Scene * scene, const HitResult & hitResult) {
-    Vector3d Lo(0, 0, 0);
+Vector3f LightSampler::sampleLight0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {
+    Vector3f Lo(0, 0, 0);
     Material * material = hitResult.facet->getMaterial();
     for (Object * lit: scene->getLights()) {
         // 光源上采样一点
         float p1 = 0;
         Facet * facet = nullptr;
-        Vector3d p = lit->sampleSurface(&p1, &facet);
+        Vector3f p = lit->sampleSurface(&p1, &facet);
         // d 代表采样方向 -wi
-        Vector3d d = p - hitResult.p;
+        Vector3f d = p - hitResult.p;
         // 计算击中点到光源采样点的距离平方
         float rsq = d.dot(d);
         // 如果背对光源应该是 0
@@ -127,11 +127,11 @@ Vector3d LightSampler::sampleLight0(const Vector3d & wo, Scene * scene, const Hi
                 continue;
             }
             // 入射方向
-            Vector3d wi = -r.getDirection();
+            Vector3f wi = -r.getDirection();
             // 计算 fr
-            Vector3d fr = material->getBRDF(wi, wo, hitResult);
+            Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 Li
-            Vector3d Li = facet->getMaterial()->getEmitting(wi, result);
+            Vector3f Li = facet->getMaterial()->getEmitting(wi, result);
             // 计算两个 cosine
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));

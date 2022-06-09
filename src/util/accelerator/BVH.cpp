@@ -31,7 +31,7 @@ BVHNode::BVHNode() {
     right = nullptr;
 }
 
-Box BVHNode::getBoundingBox() {
+AABB BVHNode::getBoundingBox() {
     return boundingBox;
 }
 
@@ -50,8 +50,8 @@ BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
         auto first = surfaces->begin() + i;
         auto last = surfaces->begin() + j + 1;
         std::sort(first, last,[k](Facet * s1, Facet * s2) -> bool {
-            Box b1 = s1->getBoundingBox();
-            Box b2 = s2->getBoundingBox();
+            AABB b1 = s1->getBoundingBox();
+            AABB b2 = s2->getBoundingBox();
             return b1.getCenter()[k] < b2.getCenter()[k];
         });
         // construct recursively
@@ -63,20 +63,12 @@ BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
     // get the surrounding box
     boundingBox = left->getBoundingBox();
     if (right != nullptr) {
-        Box boxRight = right->getBoundingBox();
-        boundingBox = Box{
-                std::min(boundingBox.getXMin(), boxRight.getXMin()),
-                std::min(boundingBox.getYMin(), boxRight.getYMin()),
-                std::min(boundingBox.getZMin(), boxRight.getZMin()),
-                std::max(boundingBox.getXMax(), boxRight.getXMax()),
-                std::max(boundingBox.getYMax(), boxRight.getYMax()),
-                std::max(boundingBox.getZMax(), boxRight.getZMax()),
-        };
+        boundingBox = boundingBox.merged(right->getBoundingBox());
     }
 }
 
 bool BVHNode::hitNode(const Ray & rin, float tMin, float tMax, HitResult * result) {
-    if (boundingBox.intersect(rin, tMin, tMax)) {
+    if (boundingBox.hit(rin, tMin, tMax)) {
         // hit the big box, but may still miss the branches
         HitResult tmpResult;
         if (!left->hitNode(rin, tMin, tMax, &tmpResult)) {

@@ -119,7 +119,7 @@ Vector3f LightSampler::sampleLight0(const Vector3f & wo, Scene * scene, const Hi
             continue;
         }
         // 否则面向光源，投射阴影光线
-        Ray r = {hitResult.p, d};
+        Ray r = {hitResult.p, d.normalized()};
         HitResult result;
         if (scene->hitObject(r, 1e-3, FLT_MAX, &result)) {
             // 如果击中点和被采样到的面片之间有其他面片挡住，则应当是 0

@@ -21,14 +21,6 @@ public:
         this->topRight = topRight;
     }
 
-    inline const Vector3f & getBottomLeft() const {
-        return bottomLeft;
-    }
-
-    inline const Vector3f & getTopRight() const {
-        return topRight;
-    }
-
     inline Vector3f getCenter() const {
         return (bottomLeft + topRight) / 2;
     }

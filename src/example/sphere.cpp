@@ -87,11 +87,12 @@ int main() {
     ImageBuffer * im = new ImageBuffer(180, 180);
 //    Renderer * renderer = new PathTracer(128, 4,5);
 //    Renderer * renderer = new LightSampler(128, 5);
-    Renderer * renderer = new BRDFSampler(128, 5);
+//    Renderer * renderer = new BRDFSampler(128, 5);
+    Renderer * renderer = new MISampler(128, 5);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "sphere_path_brdf_1.ppm", 6);
+    ImageUtil::writePPM(*im, "sphere_mis_dev.ppm", 6);
 
     return 0;
 }

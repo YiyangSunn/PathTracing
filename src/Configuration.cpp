@@ -3,44 +3,39 @@
 #include <utility>
 #include "Configuration.h"
 
-Configuration * Configuration::setDefaultHeight(int height) {
-    this->height = height;
+Configuration * Configuration::setDefaultHeight(int h) {
+    this->height = h;
     return this;
 }
 
-Configuration * Configuration::setDefaultWidth(int width) {
-    this->width = width;
+Configuration * Configuration::setDefaultWidth(int w) {
+    this->width = w;
     return this;
 }
 
 
-Configuration * Configuration::setDefaultMaxDepth(int maxDepth) {
-    this->maxDepth = maxDepth;
+Configuration * Configuration::setDefaultMaxDepth(int d) {
+    this->maxDepth = d;
     return this;
 }
 
-Configuration * Configuration::setDefaultSamplePerPixel(int samplePerPixel) {
-    this->samplePerPixel = samplePerPixel;
+Configuration * Configuration::setDefaultSamplePerPixel(int s) {
+    this->samplePerPixel = s;
     return this;
 }
 
-Configuration * Configuration::setDefaultThreadCount(int threadCount) {
-    this->threadCount = threadCount;
+Configuration * Configuration::setDefaultThreadCount(int t) {
+    this->threadCount = t;
     return this;
 }
 
-Configuration * Configuration::setDefaultSampleOnLight(int sampleOnLight) {
-    this->sampleOnLight = sampleOnLight;
+Configuration * Configuration::setDefaultIntegrator(std::string i) {
+    this->integrator = std::move(i);
     return this;
 }
 
-Configuration * Configuration::setDefaultSampler(std::string sampler) {
-    this->sampler = std::move(sampler);
-    return this;
-}
-
-Configuration * Configuration::setDefaultOutputFile(const std::string & outputFile) {
-    this->outputFile = outputFile;
+Configuration * Configuration::setDefaultOutputFile(const std::string & o) {
+    this->outputFile = o;
     return this;
 }
 
@@ -64,12 +59,8 @@ int Configuration::getMaxDepth() const {
     return maxDepth;
 }
 
-int Configuration::getSampleOnLight() const {
-    return sampleOnLight;
-}
-
-std::string Configuration::getSampler() const {
-    return sampler;
+std::string Configuration::getIntegrator() const {
+    return integrator;
 }
 
 std::string Configuration::getOutputFile() const {
@@ -78,7 +69,7 @@ std::string Configuration::getOutputFile() const {
 
 Configuration * Configuration::parseArgs(int argc, char ** argv) {
     // get input args
-    const char * opts = ":w:h:s:t:d:o:l:p:";
+    const char * opts = ":w:h:s:t:d:o:i:";
     int c = 0;
     while ((c = getopt(argc, argv, opts)) != EOF) {
         switch (c) {
@@ -97,15 +88,8 @@ Configuration * Configuration::parseArgs(int argc, char ** argv) {
             case 'd':
                 maxDepth = std::stoi(optarg);
                 break;
-            case 'l':
-                sampleOnLight = std::stoi(optarg);
-                break;
-            case 'p':
-                sampler = optarg;
-                if (sampler != "grid" && sampler != "uniform" && sampler != "blue") {
-                    std::cout << "Error: unknown sampler specified: " << sampler << std::endl;
-                    exit(-1);
-                }
+            case 'i':
+                integrator = optarg;
                 break;
             case 'o':
                 outputFile = optarg;
@@ -115,18 +99,4 @@ Configuration * Configuration::parseArgs(int argc, char ** argv) {
         }
     }
     return this;
-}
-
-std::ostream & operator<<(std::ostream & out, const Configuration & conf) {
-    out << "Configuration{" << std::endl
-        << "    width: " << conf.getWidth() << std::endl
-        << "    height: " << conf.getHeight() << std::endl
-        << "    threadCount: " << conf.getThreadCount() << std::endl
-        << "    samplePerPixel: " << conf.getSamplePerPixel() << std::endl
-        << "    maxDepth: " << conf.getMaxDepth() << std::endl
-        << "    sampleOnLight: " << conf.getSampleOnLight() << std::endl
-        << "    sampler: " << conf.getSampler() << std::endl
-        << "    outputFile: " << conf.getOutputFile() << std::endl
-        << "}" << std::endl;
-    return out;
 }

@@ -1,17 +1,17 @@
-#include "util/accelerator/BVH.h"
+#include "util/BVH.h"
 #include "scene/Scene.h"
-#include "util/mesh/OBJFile.h"
+#include "util/OBJFile.h"
 #include "texture/ConstantTexture.h"
 #include "material/Emission.h"
 #include "material/Lambertian.h"
 #include "camera/PerspectiveCamera.h"
-#include "util/image/ImageBuffer.h"
+#include "util/ImageBuffer.h"
 #include "render/PathTracer.h"
-#include "util/image/ImageUtil.h"
+#include "util/ImageUtil.h"
 #include "render/LightSampler.h"
 #include "render/BRDFSampler.h"
 #include "render/MISampler.h"
-#include "material/TorranceSparrow.h"
+#include "material/GlossyBRDF.h"
 
 int main() {
     HitResolver * resolver = new BVH();
@@ -19,7 +19,7 @@ int main() {
     OBJFile * file = new OBJFile("../resource/sphere.obj");
 
     Vector3f f0(1.0f, 0.71f, 0.29f);
-    Material * mat_1 = new TorranceSparrow(f0, 0.5, nullptr);
+    Material * mat_1 = new GlossyBRDF(f0, 0.1, nullptr);
     Object * sphere = file->loadObject("Sphere", mat_1);
     scene->addObject(sphere);
 
@@ -82,17 +82,17 @@ int main() {
     Vector3f pos(0, -6.9258f, 0);
     Vector3f tar(0, 0, 0);
     Vector3f up(0, 0, 1);
-    Camera * camera = new PerspectiveCamera(pos, tar - pos, up, 2.6, 3.2, 3.2);
+    Camera * camera = new PerspectiveCamera(pos, tar, up, 2.6, 3.2, 3.2);
 
     ImageBuffer * im = new ImageBuffer(180, 180);
-//    Renderer * renderer = new PathTracer(128, 4,5);
-//    Renderer * renderer = new LightSampler(128, 5);
-//    Renderer * renderer = new BRDFSampler(128, 5);
-    Renderer * renderer = new MISampler(128, 5);
+    Renderer * renderer = new PathTracer(128, 10,5);
+//    Renderer * renderer = new LightSampler(1024, 5);
+//    Renderer * renderer = new BRDFSampler(1024, 5);
+//    Renderer * renderer = new MISampler(1024, 5);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "sphere_mis_dev.ppm", 6);
+    ImageUtil::writePPM(*im, "sphere_path.ppm", 6);
 
     return 0;
 }

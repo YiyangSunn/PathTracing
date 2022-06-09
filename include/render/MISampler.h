@@ -2,7 +2,7 @@
 #define SIMPLE_RAY_TRACER_MISAMPLER_H
 
 #include "Renderer.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 
 class MISampler: public Renderer {
 

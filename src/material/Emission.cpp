@@ -6,15 +6,15 @@ Emission::Emission(Texture * texture): Material(texture) {
 }
 
 Vector3f Emission::getBRDF(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) {
-    throw std::logic_error("getBRDF should not be invoked on light");
+    throw std::logic_error("getBRDF should not be invoked on Emission");
 }
 
 Vector3f Emission::sampleBRDF(const Vector3f & wo, float * pdf, const HitResult & hitResult) {
-    throw std::logic_error("sampleBRDF should not be invoked on light");
+    throw std::logic_error("sampleBRDF should not be invoked on Emission");
 }
 
 float Emission::getPdf(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) {
-    throw std::logic_error("getPdf should not be invoked on light");
+    throw std::logic_error("getPdf should not be invoked on Emission");
 }
 
 bool Emission::isEmitting() {

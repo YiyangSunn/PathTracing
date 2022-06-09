@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "util/Ray.h"
-#include "surface/Facet.h"
+#include "surface/Surface.h"
 
 // interface
 class HitResolver {

@@ -1,7 +1,7 @@
 #include <thread>
 #include <cfloat>
 #include "render/LightSampler.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 #include "material/Material.h"
 
 Random LightSampler::randX;
@@ -108,26 +108,28 @@ Vector3f LightSampler::sampleLight0(const Vector3f & wo, Scene * scene, const Hi
     for (Object * lit: scene->getLights()) {
         // 光源上采样一点
         float p1 = 0;
-        Facet * facet = nullptr;
+        Surface * facet = nullptr;
         Vector3f p = lit->sampleSurface(&p1, &facet);
         // d 代表采样方向 -wi
         Vector3f d = p - hitResult.p;
-        // 计算击中点到光源采样点的距离平方
-        float rsq = d.dot(d);
+        // 击中点到光源采样点的距离
+        float r = d.length();
+        // 归一化
+        d /= r;
         // 如果背对光源应该是 0
         if (wo.dot(hitResult.n) * d.dot(hitResult.n) < 0) {
             continue;
         }
         // 否则面向光源，投射阴影光线
-        Ray r = {hitResult.p, d.normalized()};
+        Ray ray = {hitResult.p, d};
         HitResult result;
-        if (scene->hitObject(r, 1e-3, FLT_MAX, &result)) {
+        if (scene->hitObject(ray, 1e-3, FLT_MAX, &result)) {
             // 如果击中点和被采样到的面片之间有其他面片挡住，则应当是 0
             if (result.facet != facet) {
                 continue;
             }
             // 入射方向
-            Vector3f wi = -r.getDirection();
+            Vector3f wi = -d;
             // 计算 fr
             Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 Li
@@ -136,7 +138,7 @@ Vector3f LightSampler::sampleLight0(const Vector3f & wo, Scene * scene, const Hi
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));
             // 累加到 Lo
-            Lo += Li * fr * cos1 * cos2 / (p1 * rsq);
+            Lo += Li * fr * cos1 * cos2 / (p1 * r * r);
         }
     }
     return Lo;

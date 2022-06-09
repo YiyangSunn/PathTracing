@@ -1,6 +1,6 @@
 #include <algorithm>
-#include "util/accelerator/BVH.h"
-#include "util/math/Random.h"
+#include "util/BVH.h"
+#include "util/Random.h"
 
 static Random rng;
 
@@ -14,16 +14,16 @@ BVH::~BVH() {
 
 void BVH::build(const std::vector<Object *> & objects) {
     delete root;
-    std::vector<Facet *> surfaces;
+    std::vector<Surface *> surfaces;
     for (Object * obj: objects) {
-        std::vector<Facet *> sufs = obj->getSurfaces();
+        std::vector<Surface *> sufs = obj->getSurfaces();
         surfaces.insert(surfaces.end(), sufs.begin(), sufs.end());
     }
     root = new BVHNode(&surfaces, 0, (int) surfaces.size() - 1);
 }
 
-bool BVH::resolveHit(const Ray & rin, float tMin, float tMax, HitResult * result) {
-    return root->hitNode(rin, tMin, tMax, result);
+bool BVH::resolveHit(const Ray & ray, float tMin, float tMax, HitResult * result) {
+    return root->hitNode(ray, tMin, tMax, result);
 }
 
 BVHNode::BVHNode() {
@@ -35,7 +35,7 @@ AABB BVHNode::getBoundingBox() {
     return boundingBox;
 }
 
-BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
+BVHNode::BVHNode(std::vector<Surface *> * surfaces, int i, int j) {
     if (i == j) {
         // only one scene
         left = new BVHLeaf((*surfaces)[i]);
@@ -49,7 +49,7 @@ BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
         int k = rng.randInt(0, 3);
         auto first = surfaces->begin() + i;
         auto last = surfaces->begin() + j + 1;
-        std::sort(first, last,[k](Facet * s1, Facet * s2) -> bool {
+        std::sort(first, last,[k](Surface * s1, Surface * s2) -> bool {
             AABB b1 = s1->getBoundingBox();
             AABB b2 = s2->getBoundingBox();
             return b1.getCenter()[k] < b2.getCenter()[k];
@@ -59,7 +59,6 @@ BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
         left = new BVHNode(surfaces, i, m);
         right = new BVHNode(surfaces, m + 1, j);
     }
-
     // get the surrounding box
     boundingBox = left->getBoundingBox();
     if (right != nullptr) {
@@ -67,12 +66,12 @@ BVHNode::BVHNode(std::vector<Facet *> * surfaces, int i, int j) {
     }
 }
 
-bool BVHNode::hitNode(const Ray & rin, float tMin, float tMax, HitResult * result) {
-    if (boundingBox.hit(rin, tMin, tMax)) {
+bool BVHNode::hitNode(const Ray & ray, float tMin, float tMax, HitResult * result) {
+    if (boundingBox.hit(ray, tMin, tMax)) {
         // hit the big box, but may still miss the branches
         HitResult tmpResult;
-        if (!left->hitNode(rin, tMin, tMax, &tmpResult)) {
-            if (right == nullptr || !right->hitNode(rin, tMin, tMax, &tmpResult)) {
+        if (!left->hitNode(ray, tMin, tMax, &tmpResult)) {
+            if (right == nullptr || !right->hitNode(ray, tMin, tMax, &tmpResult)) {
                 return false;
             } else {
                 // only hit the right child
@@ -83,7 +82,7 @@ bool BVHNode::hitNode(const Ray & rin, float tMin, float tMax, HitResult * resul
             // hit the left child
             float t = tmpResult.t;
             *result = tmpResult;
-            if (right != nullptr && right->hitNode(rin, tMin, tMax, &tmpResult)) {
+            if (right != nullptr && right->hitNode(ray, tMin, tMax, &tmpResult)) {
                 // hit the right child too
                 if (tmpResult.t < t) {
                     *result = tmpResult;
@@ -100,11 +99,11 @@ BVHNode::~BVHNode() {
     delete right;
 }
 
-BVHLeaf::BVHLeaf(Facet * surf) {
+BVHLeaf::BVHLeaf(Surface * surf) {
     surface = surf;
     boundingBox = surf->getBoundingBox();
 }
 
-bool BVHLeaf::hitNode(const Ray & rin, float tMin, float tMax, HitResult * result) {
-    return surface->hit(rin, tMin, tMax, result);
+bool BVHLeaf::hitNode(const Ray & ray, float tMin, float tMax, HitResult * result) {
+    return surface->hit(ray, tMin, tMax, result);
 }

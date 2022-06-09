@@ -2,7 +2,7 @@
 #define SIMPLE_RAY_TRACER_PATH_TRACER_H
 
 #include "Renderer.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 
 class PathTracer: public Renderer {
 

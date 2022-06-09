@@ -1,4 +1,4 @@
-#include "util/mesh/OBJFile.h"
+#include "util/OBJFile.h"
 
 OBJFile::OBJFile(const std::string & fileName) {
     fin.open(fileName, std::ios_base::in);
@@ -9,7 +9,7 @@ OBJFile::OBJFile(const std::string & fileName) {
 }
 
 Object * OBJFile::loadObject(const std::string & objName, Material * material) {
-    Object * object = new Object();
+    auto * object = new Object();
     locateObject(objName);
     loadTriangularFaces(object, material);
     return object;
@@ -53,12 +53,12 @@ void OBJFile::loadVertexInfo() {
             // 贴图
             float u, v;
             fin >> u >> v;
-            uvs.emplace_back(u, v, 0);
+            vts.emplace_back(u, v, 0);
         } else if (type == "vn") {
             // 法线
             float x, y, z;
             fin >> x >> y >> z;
-            ns.emplace_back(x, y, z);
+            vns.emplace_back(x, y, z);
         } else {
             // 忽略此行
             std::getline(fin, type);
@@ -77,8 +77,8 @@ void OBJFile::loadTriangularFaces(Object * object, Material * material) {
         }
         object->addSurface(new Triangle(
                 vs[vi[0] - 1], vs[vi[1] - 1], vs[vi[2] - 1],
-                ns[vni[0] - 1], ns[vni[1] - 1], ns[vni[2] - 1],
-                uvs[vti[0] - 1], uvs[vti[1] - 1], uvs[vti[2] - 1],
+                vns[vni[0] - 1], vns[vni[1] - 1], vns[vni[2] - 1],
+                vts[vti[0] - 1], vts[vti[1] - 1], vts[vti[2] - 1],
                 object, material
         ));
         if (!(fin >> tag)) {

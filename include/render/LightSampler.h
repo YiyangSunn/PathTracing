@@ -2,7 +2,7 @@
 #define SIMPLE_RAY_TRACER_LIGHTSAMPLER_H
 
 #include "Renderer.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 
 class LightSampler: public Renderer {
 

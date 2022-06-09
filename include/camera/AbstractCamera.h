@@ -20,7 +20,7 @@ protected:
     Vector3f w;
 
     // distance between view point and the image plane
-    float d;
+    float dist;
 
     // width of the image plane
     float width;
@@ -31,7 +31,15 @@ protected:
 public:
 
     // view, up should be normalized
-    AbstractCamera(const Vector3f & pos, const Vector3f & view, const Vector3f & up, float dist, float width, float height);
+    inline AbstractCamera(const Vector3f & pos, const Vector3f & tar, const Vector3f & up, float dist, float width, float height) {
+        e = pos;
+        w = (pos - tar).normalize();
+        u = up.cross(w).normalize();
+        v = w.cross(u).normalize();
+        this->dist = dist;
+        this->width = width;
+        this->height = height;
+    }
 
     virtual ~AbstractCamera() = default;
 

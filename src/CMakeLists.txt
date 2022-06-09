@@ -12,24 +12,21 @@ include_directories(../include)
 
 add_library(srtlib SHARED
         Configuration.cpp
-        camera/AbstractCamera.cpp
         camera/PerspectiveCamera.cpp
         material/Emission.cpp
         material/Lambertian.cpp
-        material/TorranceSparrow.cpp
+        material/GlossyBRDF.cpp
         render/PathTracer.cpp
         render/LightSampler.cpp
         render/BRDFSampler.cpp
         render/MISampler.cpp
-        scene/Object.cpp
         scene/Scene.cpp
         surface/Triangle.cpp
         texture/ConstantTexture.cpp
-        util/accelerator/BVH.cpp
-        util/image/ImageBuffer.cpp
-        util/image/ImageUtil.cpp
-        util/math/Random.cpp
-        util/mesh/OBJFile.cpp
+        util/BVH.cpp
+        util/ImageBuffer.cpp
+        util/ImageUtil.cpp
+        util/OBJFile.cpp
         )
 
 target_link_libraries(srtlib pthread)

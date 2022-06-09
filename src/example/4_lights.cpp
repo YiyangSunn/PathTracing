@@ -1,18 +1,18 @@
-#include "util/mesh/OBJFile.h"
+#include "util/OBJFile.h"
 #include "material/Emission.h"
 #include "texture/ConstantTexture.h"
-#include "util/accelerator/BVH.h"
+#include "util/BVH.h"
 #include "material/Lambertian.h"
 #include "camera/Camera.h"
 #include "camera/PerspectiveCamera.h"
-#include "util/image/ImageBuffer.h"
+#include "util/ImageBuffer.h"
 #include "render/Renderer.h"
 #include "render/PathTracer.h"
-#include "util/image/ImageUtil.h"
+#include "util/ImageUtil.h"
 #include "render/LightSampler.h"
 #include "render/BRDFSampler.h"
 #include "render/MISampler.h"
-#include "material/TorranceSparrow.h"
+#include "material/GlossyBRDF.h"
 
 int main() {
     HitResolver * resolver = new BVH();
@@ -44,7 +44,7 @@ int main() {
     Object * light_5 = file->loadObject("light_5_Plane", mat_5);
     scene->addLight(light_5);
 
-    Vector3f wall_albedo(1.f, 1.f, 1.f);
+    Vector3f wall_albedo(0.8f, 0.8f, 0.8f);
 
     Vector3f f0(0.16f, 0.16f, 0.16f);
 
@@ -78,19 +78,19 @@ int main() {
     Object * wall_6 = file->loadObject("wall_6_Plane.003", mat_11);
     scene->addObject(wall_6);
 
-    Material * mat_12 = new TorranceSparrow(f0, 0.1, nullptr);
+    Material * mat_12 = new GlossyBRDF(f0, 0.1, nullptr);
     Object * board_1 = file->loadObject("board_1_Plane.015", mat_12);
     scene->addObject(board_1);
 
-    Material * mat_13 = new TorranceSparrow(f0, 0.12, nullptr);
+    Material * mat_13 = new GlossyBRDF(f0, 0.12, nullptr);
     Object * board_2 = file->loadObject("board_2_Plane.016", mat_13);
     scene->addObject(board_2);
 
-    Material * mat_14 = new TorranceSparrow(f0, 0.14, nullptr);
+    Material * mat_14 = new GlossyBRDF(f0, 0.14, nullptr);
     Object * board_3 = file->loadObject("board_3_Plane.001", mat_14);
     scene->addObject(board_3);
 
-    Material * mat_15 = new TorranceSparrow(f0, 0.16, nullptr);
+    Material * mat_15 = new GlossyBRDF(f0, 0.16, nullptr);
     Object * board_4 = file->loadObject("board_4_Plane.002", mat_15);
     scene->addObject(board_4);
 
@@ -99,15 +99,16 @@ int main() {
     Vector3f pos(-0.091733f, 10.f, 6.92956f);
     Vector3f tar(-0.1003f, 0, 4.6748f);
     Vector3f up(0, 0, 1);
-    Camera * camera = new PerspectiveCamera(pos, tar - pos, up, 5.8, 3, 3);
+    Camera * camera = new PerspectiveCamera(pos, tar, up, 5.8, 3, 3);
 
     ImageBuffer * im = new ImageBuffer(100, 100);
-    Renderer * renderer = new PathTracer(64, 8, 5);
-//    Renderer * renderer = new BRDFSampler(1000, 5);
+    Renderer * renderer = new PathTracer(256, 10, 4);
+//    Renderer * renderer = new BRDFSampler(200, 5);
+//    Renderer * renderer = new LightSampler(64, 5);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2f);
-    ImageUtil::writePPM(*im, "4_lights_path_mis_cos_weighted_64.ppm", 6);
+    ImageUtil::writePPM(*im, "4_lights_path.ppm", 6);
 
     return 0;
 }

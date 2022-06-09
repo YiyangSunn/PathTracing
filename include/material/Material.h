@@ -3,7 +3,7 @@
 
 #include "util/Vector3f.h"
 #include "texture/Texture.h"
-#include "surface/Facet.h"
+#include "surface/Surface.h"
 
 class Material {
 

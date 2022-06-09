@@ -2,7 +2,7 @@
 #define SIMPLE_RAY_TRACER_LAMBERTIAN_H
 
 #include "Material.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 
 class Lambertian: public Material {
 

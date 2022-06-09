@@ -1,9 +1,7 @@
 #include <cfloat>
 #include <thread>
-#include <iostream>
-
 #include "render/PathTracer.h"
-#include "util/math/Random.h"
+#include "util/Random.h"
 #include "material/Material.h"
 
 Random PathTracer::randX;
@@ -59,12 +57,9 @@ void PathTracer::render(Camera * camera, Scene * scene, ImageBuffer * im) {
     }
 
     // average
-//    std::cout << "////////////////////////////////\n";
     for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
             (*im)[i][j] /= (float) spp;
-//            (*im)[i][j] /= (float) nThreads;
-//            std::cout << (*im)[i][j] << std::endl;
         }
     }
 }
@@ -82,16 +77,9 @@ void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int s
                 // note that the y-axis is from bottom to top
                 float dy = randY.randFloat(-0.5, 0.5);
                 float y = 1.f - ((float) i + dy) / (float) (height + 1);
-
-//                Vector3f dc = trace0(camera->getRay(x, y), scene, maxDepth);
-//                color = (1 - 0.75f) * color + 0.75f * dc;
                 color += trace0(camera->getRay(x, y), scene, maxDepth);
             }
             (*im)[i - 1][j - 1] = color;
-
-//            std::cout << "***************\n" << color / (float) spp;
-////
-//            std::cout << "\n----------------------------------------\n";
         }
     }
 }
@@ -125,29 +113,31 @@ Vector3f PathTracer::sampleLight0(const Vector3f & wo, Scene * scene, const HitR
     for (Object * lit: scene->getLights()) {
         // 光源上采样一点
         float p1 = 0;
-        Facet * facet = nullptr;
+        Surface * facet = nullptr;
         Vector3f p = lit->sampleSurface(&p1, &facet);
         // d 代表采样方向 wi
         Vector3f d = p - hitResult.p;
-        // 计算击中点到光源采样点的距离平方
-        float rsq = d.dot(d);
-        if (rsq < 1) {
+        // 击中点到光源采样点的距离
+        float r = d.length();
+        if (r < 1) {
             continue;
         }
+        // 归一化
+        d /= r;
         // 如果背对光源应该是 0
         if (wo.dot(hitResult.n) * d.dot(hitResult.n) < 0) {
             continue;
         }
         // 否则面向光源，投射阴影光线
-        Ray r = {hitResult.p, d};
+        Ray ray = {hitResult.p, d};
         HitResult result;
-        if (scene->hitObject(r, 1e-3, FLT_MAX, &result)) {
+        if (scene->hitObject(ray, 1e-3, FLT_MAX, &result)) {
             // 如果击中点和被采样到的面片之间有其他面片挡住，则应当是 0
             if (result.facet != facet) {
                 continue;
             }
             // 入射方向
-            Vector3f wi = -r.getDirection();
+            Vector3f wi = -d;
             // 按照 BRDF 采样到此方向的概率密度
             float p2 = material->getPdf(wi, wo, hitResult);
             // 计算 MIS 中的权重，使用平方策略
@@ -160,8 +150,7 @@ Vector3f PathTracer::sampleLight0(const Vector3f & wo, Scene * scene, const HitR
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));
             // 累加到 Lo
-            Lo += w * Li * fr * cos1 * cos2 / (p1 * rsq);
-//            Lo += Li * fr * cos1 * cos2 / (p1 * rsq);
+            Lo += w * Li * fr * cos1 * cos2 / (p1 * r * r);
         }
     }
     return Lo;
@@ -187,7 +176,7 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
         // 计算 cosine
         float cos = d.dot(n);
         // 看是否击中光源
-        Facet * facet = nextHit.facet;
+        Surface * facet = nextHit.facet;
         Material * mat = facet->getMaterial();
         if (mat->isEmitting()) {
             // 如果击中的是光源
@@ -202,22 +191,7 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
             Vector3f Li = mat->getEmitting(wi, hitResult);
             // 累加到 Lo
             Lo += w * Li * fr * cos / p2;
-//            Vector3f v = nextHit.p - hitResult.p;
-//            float rsq = v.dot(v);
-//            if (rsq >= 1) {
-//                return {0, 0, 0};
-//            }
-//
-//            Vector3f Li = mat->getEmitting(wi, hitResult);
-//            return Li * fr * cos / p2;
         } else {
-//            // 计算轮盘赌
-//            float threshold = std::max(fr[0], std::max(fr[1], fr[2]));
-//            float lucky = (float) drand48();
-//            if (lucky > threshold) {
-//                // 终止递归
-//                return Lo;
-//            }
             if (depth > maxDepth) {
                 return {0, 0, 0};
             }
@@ -225,11 +199,6 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
             Vector3f Li = shade0(wi, scene, maxDepth, depth + 1, nextHit);
             // 累加到 Lo
             Lo += Li * fr * cos / p2;
-
-//            std::cout << cos / p2 * fr << std::endl;
-
-//            std::cout << cos << std::endl;
-
         }
     }
     return Lo;

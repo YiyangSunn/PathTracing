@@ -1,4 +1,4 @@
-#include "util/image/ImageBuffer.h"
+#include "util/ImageBuffer.h"
 
 ImageBuffer::ImageBuffer(int width, int height) {
     this->width = width;

@@ -15,9 +15,9 @@ private:
 
     std::vector<Vector3f> vs;
 
-    std::vector<Vector3f> uvs;
+    std::vector<Vector3f> vts;
 
-    std::vector<Vector3f> ns;
+    std::vector<Vector3f> vns;
 
     void locateObject(const std::string & objName);
 

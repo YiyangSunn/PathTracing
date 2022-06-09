@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "Object.h"
-#include "util/accelerator/HitResolver.h"
+#include "util/HitResolver.h"
 
 class Scene {
 

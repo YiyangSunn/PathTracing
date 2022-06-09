@@ -21,11 +21,11 @@ public:
 
     BVHNode();
 
-    explicit BVHNode(std::vector<Facet *> * surfaces, int i, int j);
+    explicit BVHNode(std::vector<Surface *> * surfaces, int i, int j);
 
     AABB getBoundingBox();
 
-    virtual bool hitNode(const Ray & rin, float tMin, float tMax, HitResult * result);
+    virtual bool hitNode(const Ray & ray, float tMin, float tMax, HitResult * result);
 
     virtual ~BVHNode();
 
@@ -35,13 +35,13 @@ class BVHLeaf: public BVHNode {
 
 private:
 
-    Facet * surface;
+    Surface * surface;
 
 public:
 
-    explicit BVHLeaf(Facet * surf);
+    explicit BVHLeaf(Surface * surf);
 
-    bool hitNode(const Ray & rin, float tMin, float tMax, HitResult * result) override;
+    bool hitNode(const Ray & ray, float tMin, float tMax, HitResult * result) override;
 
 };
 
@@ -58,7 +58,7 @@ public:
 
     void build(const std::vector<Object *> & objects) override;
 
-    bool resolveHit(const Ray & rin, float tMin, float tMax, HitResult * result) override;
+    bool resolveHit(const Ray & ray, float tMin, float tMax, HitResult * result) override;
 
     ~BVH() override;
 

@@ -1,5 +1,5 @@
-#ifndef SIMPLE_RAY_TRACER_FACET_H
-#define SIMPLE_RAY_TRACER_FACET_H
+#ifndef SIMPLE_RAY_TRACER_SURFACE_H
+#define SIMPLE_RAY_TRACER_SURFACE_H
 
 #include "util/Ray.h"
 #include "util/AABB.h"
@@ -10,23 +10,26 @@ class Object;
 
 class Material;
 
-class Facet {
+// 所有面片类的基类
+class Surface {
 
 private:
 
-    // the object containing this facet
+    // 此面片所属的对象
     Object * object;
 
-    // material of the facet
+    // 此面片的材质
     Material * material;
 
 public:
 
-    Facet(Object * obj, Material * mat): object(obj), material(mat) {};
+    inline Surface(Object * obj, Material * mat): object(obj), material(mat) {};
 
-    Object * getObject(){return object;}
+    inline Object * getObject(){return object;}
 
-    virtual bool hit(const Ray & rin, float tMin, float tMax, HitResult * hitResult) = 0;
+    inline Material * getMaterial() {return material;}
+
+    virtual bool hit(const Ray & ray, float tMin, float tMax, HitResult * hitResult) = 0;
 
     virtual float getArea() = 0;
 
@@ -36,9 +39,9 @@ public:
 
     virtual AABB getBoundingBox() = 0;
 
-    virtual Material * getMaterial() {return material;}
+    virtual void refresh() {};
 
-    virtual ~Facet() = default;
+    virtual ~Surface() = default;
 
 };
 
@@ -59,7 +62,7 @@ public:
     Vector3f n;
 
     // the hit surface
-    Facet * facet;
+    Surface * facet;
 
     HitResult() {
         t = u = v = -1;
@@ -70,4 +73,4 @@ public:
 
 };
 
-#endif //SIMPLE_RAY_TRACER_FACET_H
+#endif //SIMPLE_RAY_TRACER_SURFACE_H

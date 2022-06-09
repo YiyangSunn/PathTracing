@@ -16,16 +16,14 @@ private:
     // number of threads to use
     int threadCount{1};
 
+    // spp
     int samplePerPixel{50};
 
     // maximum depth of recursion
     int maxDepth{10};
 
-    // number of samples on the disk light
-    int sampleOnLight{25};
-
-    // which sampler to use
-    std::string sampler;
+    // which integrator to use
+    std::string integrator;
 
     // output file name
     std::string outputFile{"output.ppm"};
@@ -35,21 +33,19 @@ public:
     // pass in the command line arguments from main
     Configuration() = default;
 
-    Configuration * setDefaultWidth(int width);
+    Configuration * setDefaultWidth(int w);
 
     Configuration * setDefaultHeight(int height);
 
-    Configuration * setDefaultThreadCount(int threadCount);
+    Configuration * setDefaultThreadCount(int t);
 
-    Configuration * setDefaultSamplePerPixel(int samplePerPixel);
+    Configuration * setDefaultSamplePerPixel(int s);
 
-    Configuration * setDefaultMaxDepth(int maxDepth);
+    Configuration * setDefaultMaxDepth(int d);
 
-    Configuration * setDefaultSampleOnLight(int sampleOnLight);
+    Configuration * setDefaultIntegrator(std::string i);
 
-    Configuration * setDefaultSampler(std::string sampler);
-
-    Configuration * setDefaultOutputFile(const std::string & outputFile);
+    Configuration * setDefaultOutputFile(const std::string & o);
 
     int getWidth() const;
 
@@ -61,9 +57,7 @@ public:
 
     int getMaxDepth() const;
 
-    int getSampleOnLight() const;
-
-    std::string getSampler() const;
+    std::string getIntegrator() const;
 
     std::string getOutputFile() const;
 
@@ -72,7 +66,5 @@ public:
     virtual ~Configuration() = default;
 
 };
-
-std::ostream & operator<<(std::ostream & out, const Configuration & conf);
 
 #endif //SIMPLERAYTRACER_CONFIGURATION_H

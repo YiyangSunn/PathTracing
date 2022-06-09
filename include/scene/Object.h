@@ -3,8 +3,8 @@
 
 #include <vector>
 #include <random>
-#include "surface/Facet.h"
-#include "util/math/Random.h"
+#include "surface/Surface.h"
+#include "util/Random.h"
 
 class Object {
 
@@ -12,21 +12,40 @@ protected:
 
     Random rng;
 
-    std::vector<Facet *> surfaces;
+    std::vector<Surface *> surfaces;
 
 public:
 
     Object() = default;
 
-    void addSurface(Facet * facet);
+    inline void addSurface(Surface * surf) {
+        surfaces.push_back(surf);
+    }
 
-    const std::vector<Facet *> & getSurfaces() const;
+    inline const std::vector<Surface *> & getSurfaces() const {
+        return surfaces;
+    }
 
-    Vector3f sampleSurface(float * pdf, Facet ** pFacet);
+    inline Vector3f sampleSurface(float * pdf, Surface ** pSurf) {
+        int n = (int) surfaces.size();
+        int i = rng.randInt(0, n);
+        Surface * surf = surfaces[i];
+        Vector3f p = surf->getSample(pdf);
+        *pdf /= (float) n;
+        *pSurf = surf;
+        return p;
+    }
 
-    float getPdf(Facet * surf, const Vector3f & p);
+    inline float getPdf(Surface * surf, const Vector3f & p) {
+        int n = (int) surfaces.size();
+        return 1.f / (float) n * surf->getPdf(p);
+    }
 
-    virtual ~Object();
+    virtual ~Object() {
+        for (Surface * facet: surfaces) {
+            delete facet;
+        }
+    }
 
 };
 

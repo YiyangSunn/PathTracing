@@ -3,7 +3,7 @@
 
 #include "camera/Camera.h"
 #include "scene/Scene.h"
-#include "util/image/ImageBuffer.h"
+#include "util/ImageBuffer.h"
 
 // interface
 class Renderer {

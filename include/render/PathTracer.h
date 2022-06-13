@@ -17,11 +17,14 @@ private:
     // how many threads to use
     int nThreads;
 
+    // threshold to clamp extreme values
+    float clampThresh;
+
     static Random randX;
 
     static Random randY;
 
-    static void render0(Camera * camera, Scene * scene, ImageBuffer * im, int spp, int maxDepth);
+    static void render0(Camera * camera, Scene * scene, ImageBuffer * im, int spp, PathTracer * pt);
 
     static Vector3f trace0(const Ray & ray, Scene * scene, int maxDepth);
 
@@ -33,7 +36,7 @@ private:
 
 public:
 
-    explicit PathTracer(int spp = 30, int maxDepth = 10, int nThreads = 1);
+    explicit PathTracer(int spp = 30, int maxDepth = 10, int nThreads = 1, float clampThresh = FLT_MAX);
 
     void render(Camera * camera, Scene * scene, ImageBuffer * im) override;
 

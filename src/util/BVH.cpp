@@ -52,7 +52,7 @@ BVHNode::BVHNode(std::vector<Surface *> * surfaces, int i, int j) {
         std::sort(first, last,[k](Surface * s1, Surface * s2) -> bool {
             AABB b1 = s1->getBoundingBox();
             AABB b2 = s2->getBoundingBox();
-            return b1.getCenter()[k] < b2.getCenter()[k];
+            return b1.getBottomLeft()[k] < b2.getBottomLeft()[k];
         });
         // construct recursively
         int m = i + (j - i) / 2;

@@ -20,22 +20,32 @@ add_library(srtlib SHARED
         render/LightSampler.cpp
         render/BRDFSampler.cpp
         render/MISampler.cpp
-        scene/Scene.cpp
         surface/Triangle.cpp
         texture/ConstantTexture.cpp
         util/BVH.cpp
         util/ImageBuffer.cpp
         util/ImageUtil.cpp
-        util/OBJFile.cpp
-        )
+        util/OBJFile.cpp)
 
 target_link_libraries(srtlib pthread)
 
-add_executable(4_lights example/4_lights.cpp)
-target_link_libraries(4_lights srtlib)
+add_executable(street example/street.cpp)
+target_link_libraries(street srtlib)
 
-add_executable(cube example/cube.cpp)
-target_link_libraries(cube srtlib)
+add_executable(desk example/desk.cpp)
+target_link_libraries(desk srtlib)
 
-add_executable(sphere example/sphere.cpp)
-target_link_libraries(sphere srtlib)
+add_executable(teapot example/teapot.cpp)
+target_link_libraries(teapot srtlib)
+
+add_executable(bmps example/bmps.cpp)
+target_link_libraries(bmps srtlib)
+
+add_executable(poke example/poke.cpp)
+target_link_libraries(poke srtlib)
+
+add_executable(mis example/mis.cpp)
+target_link_libraries(mis srtlib)
+
+add_executable(bedroom example/bedroom.cpp)
+target_link_libraries(bedroom srtlib)

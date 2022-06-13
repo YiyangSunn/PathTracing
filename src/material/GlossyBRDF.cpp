@@ -27,7 +27,7 @@ Vector3f GlossyBRDF::sampleBRDF(const Vector3f & wo, float * pdf, const HitResul
     float xi_1 = randEp1.randFloat(0, 1);
     float xi_2 = randEp2.randFloat(0, 1);
     float phi = 6.28319f * xi_2;
-    float cos_theta_2 = (1 - xi_1) / (1 + (a2 - 1) * xi_1);
+    float cos_theta_2 = (1 - xi_1) / (float) (1 + (a2 - 1) * xi_1);
     float sin_theta = std::sqrt(1 - cos_theta_2);
     float x = sin_theta * std::cos(phi);
     float y = sin_theta * std::sin(phi);

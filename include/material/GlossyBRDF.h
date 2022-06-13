@@ -8,9 +8,9 @@ class GlossyBRDF: public Material {
 
 private:
 
-    float a;
+    double a;
 
-    float a2;
+    double a2;
 
     Vector3f f0;
 
@@ -20,15 +20,15 @@ private:
 
     // GGX Distribution
     inline float D(float NoH) const {
-        float t = NoH * NoH * (a2 - 1) + 1;
-        return 0.318310f * a2 / (t * t);
+        double t = NoH * NoH * (a2 - 1) + 1;
+        return (float) (0.318310 * a2 / (t * t));
     }
 
     // Smith Height-Correlated Masking and Shadowing Function
     inline float G(float NoL, float NoV) const {
-        float sql = std::sqrt(a2 + (1 - a2) * NoL * NoL);
-        float sqv = std::sqrt(a2 + (1 - a2) * NoV * NoV);
-        return 2 * NoL * NoV / (NoV * sql + NoL * sqv);
+        double sql = std::sqrt(a2 + (1 - a2) * NoL * NoL);
+        double sqv = std::sqrt(a2 + (1 - a2) * NoV * NoV);
+        return (float) (2 * NoL * NoV / (NoV * sql + NoL * sqv));
     }
 
     // Schlick Approximation

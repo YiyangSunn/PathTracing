@@ -8,10 +8,11 @@ Random PathTracer::randX;
 
 Random PathTracer::randY;
 
-PathTracer::PathTracer(int spp, int maxDepth, int nThreads) {
+PathTracer::PathTracer(int spp, int maxDepth, int nThreads, float clampThresh) {
     this->spp = spp;
     this->maxDepth = maxDepth;
     this->nThreads = nThreads;
+    this->clampThresh = clampThresh;
 }
 
 void PathTracer::render(Camera * camera, Scene * scene, ImageBuffer * im) {
@@ -28,13 +29,13 @@ void PathTracer::render(Camera * camera, Scene * scene, ImageBuffer * im) {
         for (int i = 0; i < nThreads - 1; ++i) {
             bufs[i] = new ImageBuffer(width, height);
             workers[i] = new std::thread(
-                    PathTracer::render0, camera, scene, bufs[i], spp / nThreads, maxDepth);
+                    PathTracer::render0, camera, scene, bufs[i], spp / nThreads, this);
         }
     }
 
     // run the rest work in current thread
     int rest = spp - spp / nThreads * (nThreads - 1);
-    render0(camera, scene, im, rest, maxDepth);
+    render0(camera, scene, im, rest, this);
 
     if (nThreads > 1 && workers != nullptr) {
         // wait for other threads
@@ -65,7 +66,9 @@ void PathTracer::render(Camera * camera, Scene * scene, ImageBuffer * im) {
 }
 
 // in-thread rendering
-void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int spp, int maxDepth) {
+void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int spp, PathTracer * pt) {
+    int maxDepth = pt->maxDepth;
+    float clampThresh = pt->clampThresh;
     int width = im->getWidth();
     int height = im->getHeight();
     for (int i = 1; i <= height; ++i) {
@@ -77,7 +80,7 @@ void PathTracer::render0(Camera * camera, Scene * scene, ImageBuffer * im, int s
                 // note that the y-axis is from bottom to top
                 float dy = randY.randFloat(-0.5, 0.5);
                 float y = 1.f - ((float) i + dy) / (float) (height + 1);
-                color += trace0(camera->getRay(x, y), scene, maxDepth);
+                color += trace0(camera->getRay(x, y), scene, maxDepth).clamp(clampThresh);
             }
             (*im)[i - 1][j - 1] = color;
         }
@@ -91,7 +94,7 @@ Vector3f PathTracer::trace0(const Ray & ray, Scene * scene, int maxDepth) {
         return shade0(-ray.getDirection(), scene, maxDepth, 1, hitResult);
     }
     // 逸出场景
-    return {0, 0, 0};
+    return scene->getBackground();
 }
 
 Vector3f PathTracer::shade0(const Vector3f & wo, Scene * scene, int maxDepth, int depth, const HitResult & hitResult) {
@@ -138,10 +141,6 @@ Vector3f PathTracer::sampleLight0(const Vector3f & wo, Scene * scene, const HitR
             }
             // 入射方向
             Vector3f wi = -d;
-            // 按照 BRDF 采样到此方向的概率密度
-            float p2 = material->getPdf(wi, wo, hitResult);
-            // 计算 MIS 中的权重，使用平方策略
-            float w = p1 * p1 / (p1 * p1 + p2 * p2);
             // 计算 fr
             Vector3f fr = material->getBRDF(wi, wo, hitResult);
             // 计算 Li
@@ -149,8 +148,17 @@ Vector3f PathTracer::sampleLight0(const Vector3f & wo, Scene * scene, const HitR
             // 计算两个 cosine
             float cos1 = std::abs(wi.dot(hitResult.n));
             float cos2 = std::abs(wi.dot(result.n));
-            // 累加到 Lo
-            Lo += w * Li * fr * cos1 * cos2 / (p1 * r * r);
+            // 如果该材质使用 MIS
+            if (material->enabledMIS()) {
+                // 按照 BRDF 采样到此方向的概率密度
+                float p2 = material->getPdf(wi, wo, hitResult);
+                // 计算 MIS 中的权重，使用平方策略
+                float w = p1 * p1 / (p1 * p1 + p2 * p2);
+                // 累加到 Lo
+                Lo += w * Li * fr * cos1 * cos2 / (p1 * r * r);
+            } else {
+                Lo += Li * fr * cos1 * cos2 / (p1 * r * r);
+            }
         }
     }
     return Lo;
@@ -170,19 +178,24 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
     Ray nextRay = {hitResult.p, d};
     HitResult nextHit;
     Vector3f wi = -d;
+    // 计算 fr
+    Vector3f fr = material->getBRDF(wi, wo, hitResult);
+    // 计算 cosine
+    float cos = d.dot(n);
+    // 发射采样光线
     if (scene->hitObject(nextRay, 1e-3, FLT_MAX, &nextHit)) {
-        // 计算 fr
-        Vector3f fr = material->getBRDF(wi, wo, hitResult);
-        // 计算 cosine
-        float cos = d.dot(n);
         // 看是否击中光源
         Surface * facet = nextHit.facet;
         Material * mat = facet->getMaterial();
         if (mat->isEmitting()) {
             // 如果击中的是光源
             float p1 = 0;
-            Vector3f dist = (nextHit.p - hitResult.p);
-            if (dist.dot(dist) >= 1) {
+            float r = (nextHit.p - hitResult.p).length();
+            if (r >= 1) {
+                if (!material->enabledMIS()) {
+                    // 如果该材质不使用 MIS 则返回 0
+                    return {0, 0, 0};
+                }
                 p1 = facet->getObject()->getPdf(facet, nextHit.p);
             }
             // 计算 MIS 的权重
@@ -200,6 +213,10 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
             // 累加到 Lo
             Lo += Li * fr * cos / p2;
         }
+    } else {
+        // 返回背景光作用的效果
+        Vector3f Li = scene->getBackground();
+        Lo += Li * fr * cos / p2;
     }
     return Lo;
 }

@@ -69,18 +69,36 @@ void OBJFile::loadVertexInfo() {
 void OBJFile::loadTriangularFaces(Object * object, Material * material) {
     std::string tag;
     while (fin >> tag && tag != "f");
-    while (tag == "f") {
-        char slash;
-        int vi[3], vti[3], vni[3];
-        for (int k = 0; k < 3; ++k) {
-            fin >> vi[k] >> slash >> vti[k] >> slash >> vni[k];
+    while (tag != "o") {
+        if (tag == "f") {
+            char slash;
+            Vector3f v[3], vn[3], vt[3];
+            for (int k = 0; k < 3; ++k) {
+                // 顶点坐标
+                int idx = 0;
+                fin >> idx >> slash;
+                v[k] = vs[idx - 1];
+                // UV 坐标
+                idx = 0;
+                fin >> idx;
+                if (idx != 0) {
+                    fin >> slash;
+                    vt[k] = vts[idx - 1];
+                } else {
+                    fin.clear();
+                    fin >> slash;
+                }
+                // 法线坐标
+                fin >> idx;
+                vn[k] = vns[idx - 1];
+            }
+            object->addSurface(new Triangle(
+                    v[0], v[1], v[2],
+                    vn[0], vn[1], vn[2],
+                    vt[0], vt[1], vt[2],
+                    object, material
+            ));
         }
-        object->addSurface(new Triangle(
-                vs[vi[0] - 1], vs[vi[1] - 1], vs[vi[2] - 1],
-                vns[vni[0] - 1], vns[vni[1] - 1], vns[vni[2] - 1],
-                vts[vti[0] - 1], vts[vti[1] - 1], vts[vti[2] - 1],
-                object, material
-        ));
         if (!(fin >> tag)) {
             break;
         }

@@ -89,7 +89,7 @@ Vector3f LightSampler::trace0(const Ray & ray, Scene * scene) {
         return shade0(-ray.getDirection(), scene, hitResult);
     }
     // 逸出场景
-    return {0, 0, 0};
+    return scene->getBackground();
 }
 
 Vector3f LightSampler::shade0(const Vector3f & wo, Scene * scene, const HitResult & hitResult) {

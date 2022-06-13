@@ -11,9 +11,16 @@ protected:
 
     Texture * texture;
 
+    // whether to use MIS
+    bool enableMIS;
+
 public:
 
-    explicit Material(Texture * texture): texture(texture) {}
+    inline explicit Material(Texture * texture): texture(texture), enableMIS(false) {}
+
+    inline void setEnableMIS(bool value) { enableMIS = value; }
+
+    inline bool enabledMIS() const { return enableMIS; }
 
     virtual Vector3f getBRDF(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) = 0;
 

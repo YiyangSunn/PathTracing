@@ -19,7 +19,7 @@ bool Triangle::hit(const Ray & ray, float tMin, float tMax, HitResult * hitResul
     Vector3f P = d.cross(E2);
     Vector3f Q = T.cross(E1);
     float PE1 = P.dot(E1);
-    if (std::abs(PE1) > 1e-4) {
+    if (std::abs(PE1) > 1e-5) {
         float t = Q.dot(E2) / PE1;
         if (t <= tMin || t >= tMax) {
             return false;

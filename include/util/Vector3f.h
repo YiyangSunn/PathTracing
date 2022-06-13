@@ -54,6 +54,14 @@ public:
         return {y * v.z - v.y * z, z * v.x - x * v.z, x * v.y - v.x * y};
     }
 
+    // 截取到最大值
+    inline Vector3f & clamp(float maxVal) {
+        x = std::min(x, maxVal);
+        y = std::min(y, maxVal);
+        z = std::min(z, maxVal);
+        return *this;
+    }
+
     // 获取各个分量
     inline float operator[](int idx) const {
         return (idx == 0) ? x : ((idx == 1) ? y : z);

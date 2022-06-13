@@ -15,21 +15,44 @@ private:
 
     HitResolver * hitResolver;
 
+    // 背景色
+    Vector3f background;
+
 public:
 
-    explicit Scene(HitResolver * resolver);
+    inline explicit Scene(HitResolver * resolver, const Vector3f & background = {0, 0, 0}) {
+        hitResolver = resolver;
+        this->background = background;
+    }
 
-    void build();
+    inline void setBackground(const Vector3f & color) { this->background = color; }
 
-    void addObject(Object * obj);
+    inline const Vector3f & getBackground() const { return background; }
 
-    void addLight(Object * lit);
+    inline void build() {
+        hitResolver->build(objects);
+    }
 
-    const std::vector<Object *> & getLights() const;
+    inline void addObject(Object * obj) {
+        objects.push_back(obj);
+    }
 
-    bool hitObject(const Ray & rin, float tMin, float tMax, HitResult * result);
+    inline void addLight(Object * lit) {
+        lights.push_back(lit);
+        objects.push_back(lit);
+    }
 
-    virtual ~Scene();
+    inline const std::vector<Object *> & getLights() const { return lights; }
+
+    inline bool hitObject(const Ray & rin, float tMin, float tMax, HitResult * result) {
+        return hitResolver->resolveHit(rin, tMin, tMax, result);
+    }
+
+    virtual ~Scene() {
+        for (Object * obj: objects) {
+            delete obj;
+        }
+    }
 
 };
 

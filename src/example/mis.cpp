@@ -16,8 +16,8 @@
 
 int main(int argc, char * argv[]) {
     Configuration * conf = (new Configuration())
-            ->setDefaultWidth(600)
-            ->setDefaultHeight(600)
+            ->setDefaultWidth(512)
+            ->setDefaultHeight(512)
             ->setDefaultSamplePerPixel(64)
             ->setDefaultMaxDepth(10)
             ->setDefaultThreadCount(5)

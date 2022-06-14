@@ -17,6 +17,9 @@
 float getRoughness(int argc, char * argv[]);
 
 int main(int argc, char * argv[]) {
+    // getopt 好像会修改 argv 数组
+    float roughness = getRoughness(argc, argv);
+
     Configuration * conf = (new Configuration())
             ->setDefaultWidth(180)
             ->setDefaultHeight(150)
@@ -45,8 +48,6 @@ int main(int argc, char * argv[]) {
     Material * mat_3 = new Emission(texture_3);
     Object * room = file->loadObject("room_Sphere.001", mat_3);
     scene->addLight(room);
-
-    float roughness = getRoughness(argc, argv);
 
     Texture * texture_4 = new ConstantTexture({1, 0.71, 0.29});
     Material * mat_4 = new GlossyBRDF(roughness, texture_4);

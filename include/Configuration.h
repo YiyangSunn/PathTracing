@@ -2,6 +2,7 @@
 #define SIMPLERAYTRACER_CONFIGURATION_H
 
 #include <string>
+#include <cfloat>
 
 class Configuration {
 
@@ -23,7 +24,10 @@ private:
     int maxDepth{10};
 
     // which integrator to use
-    std::string integrator;
+    std::string integrator{"path"};
+
+    // clamp threshold
+    float clampThresh{FLT_MAX};
 
     // output file name
     std::string outputFile{"output.ppm"};
@@ -45,6 +49,8 @@ public:
 
     Configuration * setDefaultIntegrator(std::string i);
 
+    Configuration * setDefaultClampThresh(float clampThresh);
+
     Configuration * setDefaultOutputFile(const std::string & o);
 
     int getWidth() const;
@@ -58,6 +64,8 @@ public:
     int getMaxDepth() const;
 
     std::string getIntegrator() const;
+
+    float getClampThresh() const;
 
     std::string getOutputFile() const;
 

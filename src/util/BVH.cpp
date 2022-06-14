@@ -16,7 +16,7 @@ void BVH::build(const std::vector<Object *> & objects) {
     delete root;
     std::vector<Surface *> surfaces;
     for (Object * obj: objects) {
-        std::vector<Surface *> sufs = obj->getSurfaces();
+        const std::vector<Surface *> & sufs = obj->getSurfaces();
         surfaces.insert(surfaces.end(), sufs.begin(), sufs.end());
     }
     root = new BVHNode(&surfaces, 0, (int) surfaces.size() - 1);

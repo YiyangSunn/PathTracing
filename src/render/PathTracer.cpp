@@ -201,7 +201,7 @@ Vector3f PathTracer::sampleBRDF0(const Vector3f & wo, Scene * scene, int maxDept
             // 计算 MIS 的权重
             float w = p2 * p2 / (p1 * p1 + p2 * p2);
             // 计算 Li
-            Vector3f Li = mat->getEmitting(wi, hitResult);
+            Vector3f Li = mat->getEmitting(wi, nextHit);
             // 累加到 Lo
             Lo += w * Li * fr * cos / p2;
         } else {

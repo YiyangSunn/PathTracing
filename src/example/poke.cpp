@@ -12,8 +12,20 @@
 #include "render/LightSampler.h"
 #include "render/BRDFSampler.h"
 #include "render/MISampler.h"
+#include "Configuration.h"
+#include "render/RendererFactory.h"
 
-int main() {
+int main(int argc, char * argv[]) {
+    Configuration * conf = (new Configuration())
+            ->setDefaultWidth(200)
+            ->setDefaultHeight(200)
+            ->setDefaultSamplePerPixel(128)
+            ->setDefaultMaxDepth(10)
+            ->setDefaultThreadCount(5)
+            ->setDefaultIntegrator("path")
+            ->setDefaultOutputFile("../image/poke.ppm")
+            ->parseArgs(argc, argv);
+
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
     scene->setBackground({0.053, 0.053, 0.053});
@@ -40,34 +52,38 @@ int main() {
     Object * lamp_button = file->loadObject("lamp_button_Cube_Cube.001", mat_4);
     scene->addObject(lamp_button);
 
-    Texture * texture_5 = new ConstantTexture({10, 10, 10});
+    Texture * texture_5 = new ConstantTexture({5, 5, 5});
     Material * mat_5 = new Emission(texture_5);
     Object * light = file->loadObject("light_Sphere.002", mat_5);
     scene->addLight(light);
 
-    Texture * texture_6 = new ConstantTexture(100 * Vector3f(0, 0.973, 1));
+    Texture * texture_6 = new ConstantTexture(10 * Vector3f(0, 0.973, 1));
     Material * mat_6 = new Emission(texture_6);
     Object * light_ring = file->loadObject("light_ring_light_ring_Sphere.001", mat_6);
     scene->addLight(light_ring);
 
-    float roughness = 0.1;
+    float roughness = 0.15;
 
-    Material * mat_7 = new GlossyBRDF({0.533, 0.533, 0.539}, roughness, nullptr);
-//    mat_7->setEnableMIS(true);
+    Texture * texture_7 = new ConstantTexture({0.533, 0.533, 0.539});
+    Material * mat_7 = new GlossyBRDF(roughness, texture_7);
+    mat_7->setEnableMIS(true);
     Object * bottom = file->loadObject("bottom_bottom_Sphere.006", mat_7);
     scene->addObject(bottom);
 
-    Material * mat_8 = new GlossyBRDF({0.546, 0.030, 0.026}, roughness, nullptr);
-//    mat_8->setEnableMIS(true);
+    Texture * texture_8 = new ConstantTexture({0.546, 0.030, 0.026});
+    Material * mat_8 = new GlossyBRDF(roughness, texture_8);
+    mat_8->setEnableMIS(true);
     Object * top = file->loadObject("top_top_Sphere.005", mat_8);
     scene->addObject(top);
 
-    Material * mat_9 = new GlossyBRDF({0.184, 0.188, 0.202}, 0.5, nullptr);
+    Texture * texture_9 = new ConstantTexture({0.184, 0.188, 0.202});
+    Material * mat_9 = new GlossyBRDF(0.5, texture_9);
 //    mat_9->setEnableMIS(true);
     Object * button = file->loadObject("button_button_Sphere.002", mat_9);
     scene->addObject(button);
 
-    Material * mat_10 = new GlossyBRDF({0.105, 0.125, 0.120}, 0.5, nullptr);
+    Texture * texture_10 = new ConstantTexture({0.105, 0.125, 0.120});
+    Material * mat_10 = new GlossyBRDF(0.5, texture_10);
 //    mat_10->setEnableMIS(true);
     Object * ribbon = file->loadObject("ribbon_ribbon_Sphere.004", mat_10);
     scene->addObject(ribbon);
@@ -79,15 +95,12 @@ int main() {
     Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar, up, 8, 6, 6);
 
-    ImageBuffer * im = new ImageBuffer(200, 200);
-//    Renderer * renderer = new PathTracer(128, 10,5, FLT_MAX);
-    Renderer * renderer = new LightSampler(256, 5);
-//    Renderer * renderer = new BRDFSampler(1024, 5);
-//    Renderer * renderer = new MISampler(128, 5);
+    ImageBuffer * im = new ImageBuffer(conf->getWidth(), conf->getHeight());
+    Renderer * renderer = RendererFactory::getInstance(*conf);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "poke_light.ppm", 6);
+    ImageUtil::writePPM(*im, conf->getOutputFile(), 6);
 
     return 0;
 }

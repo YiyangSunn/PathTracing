@@ -11,8 +11,20 @@
 #include "util/ImageUtil.h"
 #include "render/BRDFSampler.h"
 #include "render/MISampler.h"
+#include "Configuration.h"
+#include "render/RendererFactory.h"
 
-int main() {
+int main(int argc, char * argv[]) {
+    Configuration * conf = (new Configuration())
+            ->setDefaultWidth(600)
+            ->setDefaultHeight(600)
+            ->setDefaultSamplePerPixel(64)
+            ->setDefaultMaxDepth(10)
+            ->setDefaultThreadCount(5)
+            ->setDefaultIntegrator("mis")
+            ->setDefaultOutputFile("../image/mis.ppm")
+            ->parseArgs(argc, argv);
+
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
     scene->setBackground({0.053, 0.053, 0.053});
@@ -25,11 +37,13 @@ int main() {
 
     float roughness = 0.05;
 
-    Material * mat_2 = new GlossyBRDF({0.8, 0.8, 0.8}, roughness, nullptr);
+    Texture * texture_4 = new ConstantTexture({0.8, 0.8, 0.8});
+    Material * mat_2 = new GlossyBRDF(roughness, texture_4);
     Object * floor_1 = file->loadObject("floor_1_Plane", mat_2);
     scene->addObject(floor_1);
 
-    Material * mat_3 = new GlossyBRDF({0.8, 0.8, 0.8}, 1 - roughness, nullptr);
+    Texture * texture_5 = new ConstantTexture({0.8, 0.8, 0.8});
+    Material * mat_3 = new GlossyBRDF(1 - roughness, texture_5);
     Object * floor_2 = file->loadObject("floor_2_Plane.001", mat_3);
     scene->addObject(floor_2);
 
@@ -50,16 +64,12 @@ int main() {
     Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar, up, 7, 6, 6);
 
-    ImageBuffer * im = new ImageBuffer(600, 600);
-//    Renderer * renderer = new LightSampler(64, 5);
-//    Renderer * renderer = new BRDFSampler(64, 5);
-    Renderer * renderer = new MISampler(64, 5);
+    ImageBuffer * im = new ImageBuffer(conf->getWidth(), conf->getHeight());
+    Renderer * renderer = RendererFactory::getInstance(*conf);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-//    ImageUtil::writePPM(*im, "mis_light.ppm", 6);
-//    ImageUtil::writePPM(*im, "mis_brdf.ppm", 6);
-    ImageUtil::writePPM(*im, "mis_mis.ppm", 6);
+    ImageUtil::writePPM(*im, conf->getOutputFile(), 6);
 
     return 0;
 }

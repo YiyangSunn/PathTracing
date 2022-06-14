@@ -16,6 +16,8 @@ public:
 
     static void writePPM3(const ImageBuffer & im, const std::string & filename);
 
+    static ImageBuffer * readPPM6(const std::string & filename);
+
     static void gammaCorrection(ImageBuffer * im, float gamma);
 
 };

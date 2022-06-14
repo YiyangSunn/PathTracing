@@ -13,7 +13,6 @@ Configuration * Configuration::setDefaultWidth(int w) {
     return this;
 }
 
-
 Configuration * Configuration::setDefaultMaxDepth(int d) {
     this->maxDepth = d;
     return this;
@@ -31,6 +30,11 @@ Configuration * Configuration::setDefaultThreadCount(int t) {
 
 Configuration * Configuration::setDefaultIntegrator(std::string i) {
     this->integrator = std::move(i);
+    return this;
+}
+
+Configuration * Configuration::setDefaultClampThresh(float clampThresh) {
+    this->clampThresh = clampThresh;
     return this;
 }
 
@@ -63,13 +67,17 @@ std::string Configuration::getIntegrator() const {
     return integrator;
 }
 
+float Configuration::getClampThresh() const {
+    return clampThresh;
+}
+
 std::string Configuration::getOutputFile() const {
     return outputFile;
 }
 
 Configuration * Configuration::parseArgs(int argc, char ** argv) {
     // get input args
-    const char * opts = ":w:h:s:t:d:o:i:";
+    const char * opts = ":w:h:s:t:d:o:i:c:";
     int c = 0;
     while ((c = getopt(argc, argv, opts)) != EOF) {
         switch (c) {
@@ -90,6 +98,9 @@ Configuration * Configuration::parseArgs(int argc, char ** argv) {
                 break;
             case 'i':
                 integrator = optarg;
+                break;
+            case 'c':
+                clampThresh = std::stof(optarg);
                 break;
             case 'o':
                 outputFile = optarg;

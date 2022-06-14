@@ -12,7 +12,7 @@ private:
 
     double a2;
 
-    Vector3f f0;
+//    Vector3f f0;
 
     Random randEp1;
 
@@ -32,13 +32,14 @@ private:
     }
 
     // Schlick Approximation
-    inline Vector3f F(float HoO) {
+    inline Vector3f F(float HoO, const HitResult & hitResult) {
+        Vector3f f0 = texture->getValue(hitResult.u, hitResult.v, hitResult.p);
         return f0 + (1 - f0) * std::pow(1.f - HoO, 5.f);
     }
 
 public:
 
-    GlossyBRDF(const Vector3f & f0, float roughness, Texture * texture);
+    GlossyBRDF(float roughness, Texture * texture);
 
     Vector3f getBRDF(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) override;
 

@@ -2,10 +2,10 @@
 #include "material/GlossyBRDF.h"
 #include "util/FunctionUtil.h"
 
-GlossyBRDF::GlossyBRDF(const Vector3f & f0, float roughness, Texture * texture): Material(texture) {
+GlossyBRDF::GlossyBRDF(float roughness, Texture * texture): Material(texture) {
     this->a = roughness * roughness;
     this->a2 = a * a;
-    this->f0 = f0;
+//    this->f0 = f0;
 }
 
 Vector3f GlossyBRDF::getBRDF(const Vector3f & wi, const Vector3f & wo, const HitResult & hitResult) {
@@ -17,7 +17,7 @@ Vector3f GlossyBRDF::getBRDF(const Vector3f & wi, const Vector3f & wo, const Hit
     Vector3f h = (wo - wi).normalize();
     float HoO = wo.dot(h);
     float NoH = h.dot(n);
-    return F(HoO) * G(NoI, NoO) * D(NoH) / (4 * NoI * NoO);
+    return F(HoO, hitResult) * G(NoI, NoO) * D(NoH) / (4 * NoI * NoO);
 }
 
 Vector3f GlossyBRDF::sampleBRDF(const Vector3f & wo, float * pdf, const HitResult & hitResult) {

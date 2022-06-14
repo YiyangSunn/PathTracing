@@ -8,8 +8,20 @@
 #include "util/ImageBuffer.h"
 #include "render/PathTracer.h"
 #include "util/ImageUtil.h"
+#include "Configuration.h"
+#include "render/RendererFactory.h"
 
-int main () {
+int main (int argc, char * argv[]) {
+    Configuration * conf = (new Configuration())
+            ->setDefaultWidth(480)
+            ->setDefaultHeight(270)
+            ->setDefaultSamplePerPixel(128)
+            ->setDefaultMaxDepth(10)
+            ->setDefaultThreadCount(5)
+            ->setDefaultIntegrator("path")
+            ->setDefaultOutputFile("../image/desk.ppm")
+            ->parseArgs(argc, argv);
+
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
     OBJFile * file = new OBJFile("../resource/desk.obj");
@@ -76,12 +88,12 @@ int main () {
     Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar, up, 4.16, 3.2, 1.8);
 
-    ImageBuffer * im = new ImageBuffer(320, 180);
-    Renderer * renderer = new PathTracer(256, 10,5);
+    ImageBuffer * im = new ImageBuffer(conf->getWidth(), conf->getHeight());
+    Renderer * renderer = RendererFactory::getInstance(*conf);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "desk.ppm", 6);
+    ImageUtil::writePPM(*im, conf->getOutputFile(), 6);
 
     return 0;
 }

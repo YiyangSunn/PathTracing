@@ -54,6 +54,33 @@ void ImageUtil::writePPM3(const ImageBuffer & im, const std::string & filename) 
     }
 }
 
+ImageBuffer * ImageUtil::readPPM6(const std::string & filename) {
+    FILE * fp = fopen(filename.c_str(), "rb");
+    if (fp) {
+        int width = 0;
+        int height = 0;
+        int maxValue = 0;
+        fscanf(fp, "P6\n%d %d\n%d\n", &width, &height, &maxValue);
+        ImageBuffer * im = new ImageBuffer(width, height);
+        for (int i = 0; i < height; ++i) {
+            for (int j = 0; j < width; ++j) {
+                for (int k = 0; k < 3; ++k) {
+                    if (maxValue < 256) {
+                        (*im)[i][j][k] = fgetc(fp) / (float) maxValue;
+                    } else {
+                        int color = fgetc(fp);
+                        color = (color << 8) + fgetc(fp);
+                        (*im)[i][j][k] = (float) color / maxValue;
+                    }
+                }
+            }
+        }
+        fclose(fp);
+        return im;
+    }
+    return nullptr;
+}
+
 void ImageUtil::gammaCorrection(ImageBuffer * im, float gamma) {
     int w = im->getWidth();
     int h = im->getHeight();

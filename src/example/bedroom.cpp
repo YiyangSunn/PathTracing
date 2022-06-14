@@ -9,8 +9,20 @@
 #include "util/ImageBuffer.h"
 #include "render/PathTracer.h"
 #include "util/ImageUtil.h"
+#include "Configuration.h"
+#include "render/RendererFactory.h"
 
-int main() {
+int main(int argc, char * argv[]) {
+    Configuration * conf = (new Configuration())
+            ->setDefaultWidth(300)
+            ->setDefaultHeight(300)
+            ->setDefaultSamplePerPixel(128)
+            ->setDefaultMaxDepth(10)
+            ->setDefaultThreadCount(5)
+            ->setDefaultIntegrator("path")
+            ->setDefaultOutputFile("../image/bedroom.ppm")
+            ->parseArgs(argc, argv);
+
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
     OBJFile * file = new OBJFile("../resource/bedroom.obj");
@@ -95,7 +107,8 @@ int main() {
     Object * lamp_body = file->loadObject("lamp_body_Sphere.001", mat_16);
     scene->addObject(lamp_body);
 
-    Material * mat_17 = new GlossyBRDF({0.025, 0.395, 0.8}, 0.5, nullptr);
+    Texture * texture_17 = new ConstantTexture({0.025, 0.395, 0.8});
+    Material * mat_17 = new GlossyBRDF(0.5, texture_17);
     Object * lamp_cover = file->loadObject("lamp_cover_Sphere.003", mat_17);
     scene->addObject(lamp_cover);
 
@@ -161,12 +174,12 @@ int main() {
     Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar, up, 8.2, 6, 6);
 
-    ImageBuffer * im = new ImageBuffer(200, 200);
-    Renderer * renderer = new PathTracer(256, 10,5, FLT_MAX);
+    ImageBuffer * im = new ImageBuffer(conf->getWidth(), conf->getHeight());
+    Renderer * renderer = RendererFactory::getInstance(*conf);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "bedroom.ppm", 6);
+    ImageUtil::writePPM(*im, conf->getOutputFile(), 6);
 
     return 0;
 }

@@ -10,8 +10,20 @@
 #include "texture/ConstantTexture.h"
 #include "material/Lambertian.h"
 #include "material/Emission.h"
+#include "Configuration.h"
+#include "render/RendererFactory.h"
 
-int main() {
+int main(int argc, char * argv[]) {
+    Configuration * conf = (new Configuration())
+            ->setDefaultWidth(200)
+            ->setDefaultHeight(200)
+            ->setDefaultSamplePerPixel(64)
+            ->setDefaultMaxDepth(10)
+            ->setDefaultThreadCount(5)
+            ->setDefaultIntegrator("path")
+            ->setDefaultOutputFile("../image/street.ppm")
+            ->parseArgs(argc, argv);
+
     HitResolver * resolver = new BVH();
     Scene * scene = new Scene(resolver);
     OBJFile * file = new OBJFile("../resource/street.obj");
@@ -68,12 +80,12 @@ int main() {
     Vector3f up(0, 0, 1);
     Camera * camera = new PerspectiveCamera(pos, tar, up, 3.6, 3.2, 3.2);
 
-    ImageBuffer * im = new ImageBuffer(180, 180);
-    Renderer * renderer = new PathTracer(128, 10,5);
+    ImageBuffer * im = new ImageBuffer(conf->getWidth(), conf->getHeight());
+    Renderer * renderer = RendererFactory::getInstance(*conf);
     renderer->render(camera, scene, im);
 
     ImageUtil::gammaCorrection(im, 2.2);
-    ImageUtil::writePPM(*im, "street_no_mis.ppm", 6);
+    ImageUtil::writePPM(*im, conf->getOutputFile(), 6);
 
     return 0;
 }

@@ -49,3 +49,6 @@ target_link_libraries(mis srtlib)
 
 add_executable(bedroom example/bedroom.cpp)
 target_link_libraries(bedroom srtlib)
+
+add_executable(Higokumaru example/Higokumaru.cpp)
+target_link_libraries(Higokumaru srtlib)
